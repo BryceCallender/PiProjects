@@ -30,8 +30,8 @@ def static_color():
     json_data = request.json
     color = color_from_json(json_data)
 
-    for i in range(len(pixels)):
-        pixels[i] = (color.r, color.g, color.b)
+    # for i in range(len(pixels)):
+    #     pixels[i] = (color.r, color.g, color.b)
 
     return jsonify({"status": "OK"})
 
@@ -139,4 +139,4 @@ def color_from_json(json):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
