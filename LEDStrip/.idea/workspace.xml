@@ -19,7 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b1268ce0-2c49-4d88-9115-5ee8ba4ebff0" name="Default Changelist" comment="Added functionality to the routes and made them post requests">
+    <list default="true" id="b1268ce0-2c49-4d88-9115-5ee8ba4ebff0" name="Default Changelist" comment="Made the host be based off the computer's IP and not localhost">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
@@ -156,7 +156,10 @@
       <workItem from="1594356940613" duration="394000" />
       <workItem from="1594357360729" duration="301000" />
       <workItem from="1594423676745" duration="3210000" />
-      <workItem from="1594501133740" duration="12273000" />
+      <workItem from="1594501133740" duration="12333000" />
+      <workItem from="1594584714685" duration="5366000" />
+      <workItem from="1594613621379" duration="2094000" />
+      <workItem from="1594665781093" duration="968000" />
     </task>
     <task id="LOCAL-00001" summary="Added functionality to the routes and made them post requests">
       <created>1594511514198</created>
@@ -165,7 +168,14 @@
       <option name="project" value="LOCAL" />
       <updated>1594511514198</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Made the host be based off the computer's IP and not localhost">
+      <created>1594519280945</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1594519280945</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -181,10 +191,12 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Added functionality to the routes and made them post requests" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added functionality to the routes and made them post requests" />
+    <MESSAGE value="Made the host be based off the computer's IP and not localhost" />
+    <option name="LAST_COMMIT_MESSAGE" value="Made the host be based off the computer's IP and not localhost" />
   </component>
   <component name="WindowStateProjectService">
     <state x="802" y="359" key="#Inspections" timestamp="1594356974194">
@@ -199,22 +211,22 @@
       <screen x="0" y="0" width="3840" height="1560" />
     </state>
     <state x="1333" y="535" key="FileChooserDialogImpl/0.0.3840.1560@0.0.3840.1560" timestamp="1594357191994" />
-    <state width="1608" height="394" key="GridCell.Tab.0.bottom" timestamp="1594518077308">
+    <state width="1613" height="399" key="GridCell.Tab.0.bottom" timestamp="1594615788744">
       <screen x="0" y="0" width="3840" height="1560" />
     </state>
-    <state width="1608" height="394" key="GridCell.Tab.0.bottom/0.0.3840.1560@0.0.3840.1560" timestamp="1594518077308" />
-    <state width="1608" height="394" key="GridCell.Tab.0.center" timestamp="1594518077308">
+    <state width="1613" height="399" key="GridCell.Tab.0.bottom/0.0.3840.1560@0.0.3840.1560" timestamp="1594615788744" />
+    <state width="1613" height="399" key="GridCell.Tab.0.center" timestamp="1594615788744">
       <screen x="0" y="0" width="3840" height="1560" />
     </state>
-    <state width="1608" height="394" key="GridCell.Tab.0.center/0.0.3840.1560@0.0.3840.1560" timestamp="1594518077308" />
-    <state width="1608" height="394" key="GridCell.Tab.0.left" timestamp="1594518077308">
+    <state width="1613" height="399" key="GridCell.Tab.0.center/0.0.3840.1560@0.0.3840.1560" timestamp="1594615788744" />
+    <state width="1613" height="399" key="GridCell.Tab.0.left" timestamp="1594615788744">
       <screen x="0" y="0" width="3840" height="1560" />
     </state>
-    <state width="1608" height="394" key="GridCell.Tab.0.left/0.0.3840.1560@0.0.3840.1560" timestamp="1594518077308" />
-    <state width="1608" height="394" key="GridCell.Tab.0.right" timestamp="1594518077308">
+    <state width="1613" height="399" key="GridCell.Tab.0.left/0.0.3840.1560@0.0.3840.1560" timestamp="1594615788744" />
+    <state width="1613" height="399" key="GridCell.Tab.0.right" timestamp="1594615788744">
       <screen x="0" y="0" width="3840" height="1560" />
     </state>
-    <state width="1608" height="394" key="GridCell.Tab.0.right/0.0.3840.1560@0.0.3840.1560" timestamp="1594518077308" />
+    <state width="1613" height="399" key="GridCell.Tab.0.right/0.0.3840.1560@0.0.3840.1560" timestamp="1594615788744" />
     <state x="1055" y="425" key="SettingsEditor" timestamp="1594507415972">
       <screen x="0" y="0" width="3840" height="1560" />
     </state>
@@ -230,6 +242,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/LEDStrip$Flask__app_py_.coverage" NAME="Flask (app.py) Coverage Results" MODIFIED="1594356816871" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/LEDStrip$LEDStrip.coverage" NAME="LEDStrip Coverage Results" MODIFIED="1594518077300" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LEDStrip$LEDStrip.coverage" NAME="LEDStrip Coverage Results" MODIFIED="1594613798410" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>

@@ -5,8 +5,29 @@ from Color import Color
 import board
 import neopixel
 
+#pixels = []
 pixels = neopixel.NeoPixel(board.D18, 30)
+
 app = Flask(__name__)
+
+enabled = False
+
+
+@app.route("/api/led_status", methods=["GET"])
+def led_status():
+    return jsonify({"enabled": enabled})
+
+
+@app.route("/api/change_status", methods=["POST"])
+def change_status():
+    json_data = request.json
+    global enabled
+    enabled = json_data["enabled"]
+
+    if not enabled:
+        turn_off()
+
+    return jsonify({"status": "OK"})
 
 
 @app.route("/api/color_wipe/", methods=["POST"])
@@ -25,13 +46,15 @@ def color_wipe(wait_ms=50):
     return jsonify({"status": "OK"})
 
 
-@app.route("/api/static_color/", methods=["POST"])
+@app.route("/api/static_color", methods=["POST"])
 def static_color():
     json_data = request.json
     color = color_from_json(json_data)
 
-    # for i in range(len(pixels)):
-    #     pixels[i] = (color.r, color.g, color.b)
+    print(json_data)
+
+    for i in range(len(pixels)):
+        pixels[i] = (color.r, color.g, color.b)
 
     return jsonify({"status": "OK"})
 
@@ -136,6 +159,12 @@ def color_from_json(json):
         return Color.default
 
     return Color(json["r"], json["g"], json["b"])
+
+
+def turn_off():
+    for i in range(len(pixels)):
+        pixels[i] = (0, 0, 0)
+        pixels.show()
 
 
 if __name__ == "__main__":
