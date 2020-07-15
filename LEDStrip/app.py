@@ -6,7 +6,7 @@ import board
 import neopixel
 
 #pixels = []
-pixels = neopixel.NeoPixel(board.D18, 30)
+pixels = neopixel.NeoPixel(board.D18, 144)
 
 app = Flask(__name__)
 
@@ -51,10 +51,9 @@ def static_color():
     json_data = request.json
     color = color_from_json(json_data)
 
-    print(json_data)
-
     for i in range(len(pixels)):
         pixels[i] = (color.r, color.g, color.b)
+        pixels.show()
 
     return jsonify({"status": "OK"})
 
@@ -137,9 +136,17 @@ def appear_from_back(wait_ms=50):
     return jsonify({"status": "OK"})
 
 
-@app.route("/api/hyperspace")
+@app.route("/api/hyperspace", methods=["POST"])
 def hyperspace():
-    return "hyperspace"
+    for i in range(len(pixels)):
+        for j in range(i + 5):
+            if i + j < len(pixels):
+                pixels[i+j] = (255, 255, 255)
+                pixels.show()
+                sleep(0.01)
+        pixels[i] = (0, 0, 0)
+
+    return jsonify({"status": "OK"})
 
 
 def wheel(pos):
