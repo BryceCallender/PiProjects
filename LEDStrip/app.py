@@ -30,7 +30,7 @@ def change_status():
     return jsonify({"status": "OK"})
 
 
-@app.route("/api/color_wipe/", methods=["POST"])
+@app.route("/api/color_wipe", methods=["POST"])
 @app.route("/api/color_wipe/<wait_ms>", methods=["POST"])
 # Define functions which animate LEDs in various ways.
 def color_wipe(wait_ms=50):
@@ -59,7 +59,7 @@ def static_color():
     return jsonify({"status": "OK"})
 
 
-@app.route("/api/rainbow/", methods=["POST"])
+@app.route("/api/rainbow", methods=["POST"])
 def rainbow(wait_ms=20, iterations=1):
     """Draw rainbow that fades across all pixels at once."""
     for j in range(256 * iterations):
@@ -72,7 +72,7 @@ def rainbow(wait_ms=20, iterations=1):
     return jsonify({"status": "OK"})
 
 
-@app.route("/api/rainbow_cycle/", methods=["POST"])
+@app.route("/api/rainbow_cycle", methods=["POST"])
 def rainbow_cycle(wait_ms=20, iterations=5):
     """Draw rainbow that uniformly distributes itself across all pixels."""
     for j in range(256 * iterations):
@@ -85,7 +85,7 @@ def rainbow_cycle(wait_ms=20, iterations=5):
     return jsonify({"status": "OK"})
 
 
-@app.route("/api/theater_chase/", methods=["POST"])
+@app.route("/api/theater_chase", methods=["POST"])
 def theater_chase(wait_ms=50, iterations=10):
     json_data = request.json
     color = color_from_json(json_data)
@@ -103,7 +103,7 @@ def theater_chase(wait_ms=50, iterations=10):
     return jsonify({"status": "OK"})
 
 
-@app.route("/api/theater_chase_rainbow/", methods=["POST"])
+@app.route("/api/theater_chase_rainbow", methods=["POST"])
 def theater_chase_rainbow(wait_ms=50):
     """Rainbow movie theater light style chaser animation."""
     for j in range(256):
@@ -119,7 +119,7 @@ def theater_chase_rainbow(wait_ms=50):
     return jsonify({"status": "OK"})
 
 
-@app.route("/api/appear_from_back/", methods=["POST"])
+@app.route("/api/appear_from_back", methods=["POST"])
 def appear_from_back(wait_ms=50):
     json_data = request.json
     color = color_from_json(json_data)
@@ -137,7 +137,7 @@ def appear_from_back(wait_ms=50):
     return jsonify({"status": "OK"})
 
 
-@app.route("/api/hyperspace/")
+@app.route("/api/hyperspace")
 def hyperspace():
     return "hyperspace"
 
