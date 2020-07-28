@@ -14,7 +14,7 @@ app = Flask(__name__)
 enabled = False
 
 # LED strip configuration:
-LED_COUNT      = 16      # Number of LED pixels.
+LED_COUNT      = 144      # Number of LED pixels.
 LED_PIN        = 18      # GPIO pin connected to the pixels (18 uses PWM!).
 #LED_PIN        = 10      # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
 LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
@@ -52,7 +52,7 @@ def color_wipe(wait_ms=50):
     json_data = request.json
     color = color_from_json(json_data)
 
-    for i in range(len(pixels)):
+    for i in range(pixels.numPixels()):
         pixels.setPixelColor(i, color)
         pixels.show()
         sleep(wait_ms/1000.0)
@@ -65,7 +65,7 @@ def static_color():
     json_data = request.json
     color = color_from_json(json_data)
 
-    for i in range(len(pixels)):
+    for i in range(pixels.numPixels()):
         pixels.setPixelColor(i, color)
         pixels.show()
 
@@ -74,7 +74,6 @@ def static_color():
 
 @app.route("/api/rainbow", methods=["POST"])
 def rainbow(wait_ms=20, iterations=1):
-    """Draw rainbow that fades across all pixels at once."""
     """Draw rainbow that fades across all pixels at once."""
     for j in range(256 * iterations):
         for i in range(pixels.numPixels()):
@@ -87,7 +86,6 @@ def rainbow(wait_ms=20, iterations=1):
 
 @app.route("/api/rainbow_cycle", methods=["POST"])
 def rainbow_cycle(wait_ms=20, iterations=5):
-    """Draw rainbow that uniformly distributes itself across all pixels."""
     """Draw rainbow that uniformly distributes itself across all pixels."""
     for j in range(256 * iterations):
         for i in range(pixels.numPixels()):
@@ -104,7 +102,6 @@ def theater_chase(wait_ms=50, iterations=10):
     color = color_from_json(json_data)
 
     """Movie theater light style chaser animation."""
-    """Movie theater light style chaser animation."""
     for j in range(iterations):
         for q in range(3):
             for i in range(0, pixels.numPixels(), 3):
@@ -119,7 +116,6 @@ def theater_chase(wait_ms=50, iterations=10):
 
 @app.route("/api/theater_chase_rainbow", methods=["POST"])
 def theater_chase_rainbow(wait_ms=50):
-    """Rainbow movie theater light style chaser animation."""
     """Rainbow movie theater light style chaser animation."""
     for j in range(256):
         for q in range(3):
@@ -138,29 +134,27 @@ def appear_from_back(wait_ms=50):
     json_data = request.json
     color = color_from_json(json_data)
 
-    for i in range(len(pixels)):
-        for j in reversed(range(i, len(pixels))):
-            # first set all pixels at the begin
-            for k in range(i):
-                pixels.setPixelColor(k, color)
-            # set then the pixel at position j
-            pixels.setPixelColor(j, color)
-            pixels.show()
-            sleep(wait_ms/1000.0)
+    for j in reversed(range(0, pixels.numPixels())):
+        # first set all pixels at the begin
+        for k in range(i):
+            pixels.setPixelColor(k, color)
+        # set then the pixel at position j
+        pixels.setPixelColor(j, color)
+        pixels.show()
+        sleep(wait_ms/1000.0)
 
     return jsonify({"status": "OK"})
 
 
 @app.route("/api/hyperspace", methods=["POST"])
 def hyperspace():
-    for i in range(len(pixels)):
-        for j in range(i + 5):
-            if i + j < len(pixels):
-                pixels[i+j] = (255, 255, 255)
+    for i in range(pixels.numPixels()):
+        for j in range(5):
+            if i + j < pixels.numPixels():
+                pixels.setPixelColor(i+j, Color(200, 200, 200))
                 pixels.show()
-                sleep(0.01)
-        pixels[i] = (0, 0, 0)
-
+        pixels.setPixelColor(i, Color(0, 0, 0))
+    pixels.setPixelColor(pixels.numPixels(), Color(0, 0, 0))
     return jsonify({"status": "OK"})
 
 
@@ -184,8 +178,8 @@ def color_from_json(json):
 
 
 def turn_off():
-    for i in range(len(pixels)):
-        pixels[i] = (0, 0, 0)
+    for i in range(pixels.numPixels()):
+        pixels.setPixelColor(i, Color(0, 0, 0))
         pixels.show()
 
 
