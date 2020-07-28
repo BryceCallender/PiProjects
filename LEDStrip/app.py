@@ -1,16 +1,30 @@
 from flask import Flask, request, jsonify
 from time import sleep
-from Color import Color
+import time
+from rpi_ws281x import *
 
-import board
-import neopixel
+#import board
+#import neopixel
 
 #pixels = []
-pixels = neopixel.NeoPixel(board.D18, 144)
+#pixels = neopixel.NeoPixel(board.D18, 144)
 
 app = Flask(__name__)
 
 enabled = False
+
+# LED strip configuration:
+LED_COUNT      = 16      # Number of LED pixels.
+LED_PIN        = 18      # GPIO pin connected to the pixels (18 uses PWM!).
+#LED_PIN        = 10      # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
+LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
+LED_DMA        = 10      # DMA channel to use for generating signal (try 10)
+LED_BRIGHTNESS = 255     # Set to 0 for darkest and 255 for brightest
+LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
+LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
+
+pixels = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
+pixels.begin()
 
 
 @app.route("/api/led_status", methods=["GET"])
@@ -39,7 +53,7 @@ def color_wipe(wait_ms=50):
     color = color_from_json(json_data)
 
     for i in range(len(pixels)):
-        pixels[i] = (color.r, color.g, color.b)
+        pixels.setPixelColor(i, color)
         pixels.show()
         sleep(wait_ms/1000.0)
 
@@ -52,7 +66,7 @@ def static_color():
     color = color_from_json(json_data)
 
     for i in range(len(pixels)):
-        pixels[i] = (color.r, color.g, color.b)
+        pixels.setPixelColor(i, color)
         pixels.show()
 
     return jsonify({"status": "OK"})
@@ -61,10 +75,10 @@ def static_color():
 @app.route("/api/rainbow", methods=["POST"])
 def rainbow(wait_ms=20, iterations=1):
     """Draw rainbow that fades across all pixels at once."""
+    """Draw rainbow that fades across all pixels at once."""
     for j in range(256 * iterations):
-        for i in range(len(pixels)):
-            color = wheel((i + j) & 255)
-            pixels[i] = (color.r, color.g, color.b)
+        for i in range(pixels.numPixels()):
+            pixels.setPixelColor(i, wheel((i + j) & 255))
         pixels.show()
         sleep(wait_ms / 1000.0)
 
@@ -74,12 +88,12 @@ def rainbow(wait_ms=20, iterations=1):
 @app.route("/api/rainbow_cycle", methods=["POST"])
 def rainbow_cycle(wait_ms=20, iterations=5):
     """Draw rainbow that uniformly distributes itself across all pixels."""
+    """Draw rainbow that uniformly distributes itself across all pixels."""
     for j in range(256 * iterations):
-        for i in range(len(pixels)):
-            color = wheel((int(i * 256 / len(pixels)) + j) & 255)
-            pixels[i] = (color.r, color.g, color.b)
+        for i in range(pixels.numPixels()):
+            pixels.setPixelColor(i, wheel((int(i * 256 / pixels.numPixels()) + j) & 255))
         pixels.show()
-        sleep(wait_ms/1000.0)
+        sleep(wait_ms / 1000.0)
 
     return jsonify({"status": "OK"})
 
@@ -90,14 +104,15 @@ def theater_chase(wait_ms=50, iterations=10):
     color = color_from_json(json_data)
 
     """Movie theater light style chaser animation."""
+    """Movie theater light style chaser animation."""
     for j in range(iterations):
         for q in range(3):
-            for i in range(0, len(pixels), 3):
-                pixels[i+q] = (color.r, color.g, color.b)
+            for i in range(0, pixels.numPixels(), 3):
+                pixels.setPixelColor(i + q, color)
             pixels.show()
-            sleep(wait_ms/1000.0)
-            for i in range(0, len(pixels), 3):
-                pixels[i+q] = (0, 0, 0)
+            time.sleep(wait_ms / 1000.0)
+            for i in range(0, pixels.numPixels(), 3):
+                pixels.setPixelColor(i + q, 0)
 
     return jsonify({"status": "OK"})
 
@@ -105,15 +120,15 @@ def theater_chase(wait_ms=50, iterations=10):
 @app.route("/api/theater_chase_rainbow", methods=["POST"])
 def theater_chase_rainbow(wait_ms=50):
     """Rainbow movie theater light style chaser animation."""
+    """Rainbow movie theater light style chaser animation."""
     for j in range(256):
         for q in range(3):
-            for i in range(0, len(pixels), 3):
-                color = wheel((i+j) % 255)
-                pixels[i+q] = (color.r, color.g, color.b)
+            for i in range(0, pixels.numPixels(), 3):
+                pixels.setPixelColor(i + q, wheel((i + j) % 255))
             pixels.show()
-            sleep(wait_ms/1000.0)
-            for i in range(0, len(pixels), 3):
-                pixels[i+q] = (0, 0, 0)
+            time.sleep(wait_ms / 1000.0)
+            for i in range(0, pixels.numPixels(), 3):
+                pixels.setPixelColor(i + q, 0)
 
     return jsonify({"status": "OK"})
 
@@ -127,9 +142,9 @@ def appear_from_back(wait_ms=50):
         for j in reversed(range(i, len(pixels))):
             # first set all pixels at the begin
             for k in range(i):
-                pixels[k] = (color.r, color.g, color.b)
+                pixels.setPixelColor(k, color)
             # set then the pixel at position j
-            pixels[j] = (color.r, color.g, color.b)
+            pixels.setPixelColor(j, color)
             pixels.show()
             sleep(wait_ms/1000.0)
 
@@ -163,7 +178,7 @@ def wheel(pos):
 
 def color_from_json(json):
     if json is None:
-        return Color.default
+        return Color(0, 0, 255)
 
     return Color(json["r"], json["g"], json["b"])
 
