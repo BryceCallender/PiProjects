@@ -21,8 +21,6 @@ namespace LEDControl
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-
-                    webBuilder.UseUrls("http://192.168.1.234:5000");
                 });
     }
 }

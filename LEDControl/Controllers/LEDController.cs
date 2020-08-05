@@ -10,7 +10,9 @@ using System.Drawing;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
+using System.Timers;
 using System.Threading;
+using System.Runtime.CompilerServices;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -43,7 +45,7 @@ namespace LEDControl.Controllers
         }
 
         [HttpPost("color_wipe")]
-        public void ColorWipe([FromBody] JsonColor jsonColor, int waitTime = 50)
+        public void ColorWipe([FromBody] JsonColor jsonColor)
         {
             Color color = Color.FromArgb(255, jsonColor.R, jsonColor.G, jsonColor.B);
 
@@ -56,7 +58,7 @@ namespace LEDControl.Controllers
                     LEDControlData.strip.SetLED(i, color);
                     rpi.Render();
 
-                    Thread.Sleep(waitTime);
+                    Thread.Sleep(50);
                 }
             }
         }
@@ -74,7 +76,7 @@ namespace LEDControl.Controllers
         }
 
         [HttpPost("rainbow")]
-        public void Rainbow(int waitTime = 20, int iterations = 1)
+        public void Rainbow(int iterations = 1)
         {
             using (var rpi = new WS281x(LEDControlData.settings))
             {
@@ -87,13 +89,13 @@ namespace LEDControl.Controllers
                     }
 
                     rpi.Render();
-                    Thread.Sleep(waitTime);
+                    Thread.Sleep(20);
                 }
             }
         }
 
         [HttpPost("rainbow_cycle")]
-        public void RainbowCycle(int waitTime = 20, int iterations = 5)
+        public void RainbowCycle(int iterations = 5)
         {
             using (var rpi = new WS281x(LEDControlData.settings))
             {
@@ -106,7 +108,7 @@ namespace LEDControl.Controllers
                     }
 
                     rpi.Render();
-                    Thread.Sleep(waitTime);
+                    Thread.Sleep(20);
                 }
             }
         }
@@ -175,26 +177,69 @@ namespace LEDControl.Controllers
         }
 
         [HttpPost("hyperspace")]
-        public void Hyperspace(int length = 5)
+        public async Task Hyperspace(int length = 5, int numThreads = 5)
         {
             using (var rpi = new WS281x(LEDControlData.settings))
             {
-                for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
+                for(int thread = 0; thread < numThreads; thread++)
                 {
-                    for (int j = 0; j < length; j++)
+                    new Thread(() =>
                     {
-                        if (i + j < LEDControlData.strip.LEDCount)
+                        for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
                         {
-                            LEDControlData.strip.SetLED(i + j, Color.White);
-                        }
-                    }
-		    rpi.Render();
+                            for (int j = 0; j < length; j++)
+                            {
+                                if (i + j < LEDControlData.strip.LEDCount)
+                                {
+                                    LEDControlData.strip.SetLED(i + j, Color.White);
+                                }
+                            }
+                            rpi.Render();
 
-                    LEDControlData.strip.SetLED(i, Color.Black);
+                            LEDControlData.strip.SetLED(i, Color.Black);
+                        }
+
+                        LEDControlData.strip.SetLED(LEDControlData.strip.LEDCount - 1, Color.Black);
+                    });
+
+                    await Task.Delay(100);
+                }
+            }
+        }
+
+        [HttpPost("breathing")]
+        public void Breathe([FromBody] JsonColor jsonColor, int duration = 2) //duration in terms of seconds
+        {
+            LEDControlData.strip.Brightness = 255;
+
+            Color color = Color.FromArgb(LEDControlData.strip.Brightness, jsonColor.R, jsonColor.G, jsonColor.B);
+
+            using (var rpi = new WS281x(LEDControlData.settings))
+            {
+                Stopwatch breathingTimer = new Stopwatch();
+
+                while(breathingTimer.Elapsed.TotalSeconds < duration)
+                {
+                    LEDControlData.strip.SetAll(color);
+
+                    LEDControlData.strip.Brightness = Lerp(0, 255, breathingTimer.Elapsed.TotalSeconds);
                 }
 
-                LEDControlData.strip.SetLED(LEDControlData.strip.LEDCount - 1, Color.Black);
+                breathingTimer.Restart();
+
+                while (breathingTimer.Elapsed.TotalSeconds < duration)
+                {
+                    LEDControlData.strip.SetAll(color);
+
+                    LEDControlData.strip.Brightness = Lerp(255, 0, breathingTimer.Elapsed.TotalSeconds);
+                }
             }
+        }
+
+        [HttpPost("breathing_rainbow")]
+        public void BreathingRainbow(int duration = 2)
+        {
+
         }
 
 
@@ -216,6 +261,10 @@ namespace LEDControl.Controllers
             }
         }
         
+        private byte Lerp(float from, float to, double time)
+        {
+            return (byte)((1 - time) * from + time * to);
+        }
 
     }
 }
