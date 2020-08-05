@@ -186,9 +186,9 @@ namespace LEDControl.Controllers
                         if (i + j < LEDControlData.strip.LEDCount)
                         {
                             LEDControlData.strip.SetLED(i + j, Color.White);
-                            rpi.Render();
                         }
                     }
+		    rpi.Render();
 
                     LEDControlData.strip.SetLED(i, Color.Black);
                 }

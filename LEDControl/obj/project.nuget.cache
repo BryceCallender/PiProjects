@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "EOT2Vcu1ksi0/PXr1W2UeHcs7d6dLDORasvzMudmMOG134yDN19dtUVmEqZnI6w8or7SbHEwwIGrNmeOGoUm2A==",
+  "dgSpecHash": "lCGicNiVFWNQ/Jvj1WZ2smysydgPGbdixReAEvx9pmE1j30GSulbKmY1JoupoNc2YIbilkYPd2ewugBz95w3Qg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\bryce\\Desktop\\PiProjects\\LEDControl\\LEDControl.csproj",
+  "projectFilePath": "/home/pi/Github/PiProjects/LEDControl/LEDControl.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\bryce\\.nuget\\packages\\kenssamson.rpi-ws281x-csharp\\1.1.0\\kenssamson.rpi-ws281x-csharp.1.1.0.nupkg.sha512",
-    "C:\\Users\\bryce\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512"
+    "/home/pi/.nuget/packages/kenssamson.rpi-ws281x-csharp/1.1.0/kenssamson.rpi-ws281x-csharp.1.1.0.nupkg.sha512",
+    "/home/pi/.nuget/packages/newtonsoft.json/12.0.3/newtonsoft.json.12.0.3.nupkg.sha512"
   ],
   "logs": []
 }
