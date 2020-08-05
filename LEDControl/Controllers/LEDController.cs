@@ -43,7 +43,7 @@ namespace LEDControl.Controllers
         }
 
         [HttpPost("color_wipe")]
-        public void ColorWipe([FromBody] JsonColor jsonColor)
+        public void ColorWipe([FromBody] JsonColor jsonColor, int waitTime = 50)
         {
             Color color = Color.FromArgb(255, jsonColor.R, jsonColor.G, jsonColor.B);
 
@@ -56,7 +56,7 @@ namespace LEDControl.Controllers
                     LEDControlData.strip.SetLED(i, color);
                     rpi.Render();
 
-                    Thread.Sleep(50);
+                    Thread.Sleep(waitTime);
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace LEDControl.Controllers
         }
 
         [HttpPost("rainbow")]
-        public void Rainbow(int iterations = 1)
+        public void Rainbow(int waitTime = 20, int iterations = 1)
         {
             using (var rpi = new WS281x(LEDControlData.settings))
             {
@@ -87,13 +87,13 @@ namespace LEDControl.Controllers
                     }
 
                     rpi.Render();
-                    Thread.Sleep(20);
+                    Thread.Sleep(waitTime);
                 }
             }
         }
 
         [HttpPost("rainbow_cycle")]
-        public void RainbowCycle(int iterations = 5)
+        public void RainbowCycle(int waitTime = 20, int iterations = 5)
         {
             using (var rpi = new WS281x(LEDControlData.settings))
             {
@@ -106,10 +106,97 @@ namespace LEDControl.Controllers
                     }
 
                     rpi.Render();
-                    Thread.Sleep(20);
+                    Thread.Sleep(waitTime);
                 }
             }
         }
+
+        [HttpPost("theater_chase")]
+        public void TheaterChase([FromBody] JsonColor jsonColor, int waitTime = 50, int iterations = 5)
+        {
+            Color color = Color.FromArgb(LEDControlData.strip.Brightness, jsonColor.R, jsonColor.G, jsonColor.B);
+
+            using (var rpi = new WS281x(LEDControlData.settings))
+            {
+                for (int j = 0; j < iterations; j++)
+                {
+                    for (int q = 0; q < 3; q++)
+                    {
+                        for (int i = 0; i < LEDControlData.strip.LEDCount; i += 3)
+                        {
+                            LEDControlData.strip.SetLED(i + q, color);
+                        }
+
+                        rpi.Render();
+                        Thread.Sleep(waitTime);
+
+                        for(int i = 0; i < LEDControlData.strip.LEDCount; i += 3)
+                        {
+                            LEDControlData.strip.SetLED(i + q, Color.Black);
+                        }
+                    }
+                }
+            }
+        }
+
+        [HttpPost("theater_chase_rainbow")]
+        public void TheaterChaseRainbow(int waitTime = 50, int iterations = 5)
+        {
+            using (var rpi = new WS281x(LEDControlData.settings))
+            {
+                for (int j = 0; j < iterations; j++)
+                {
+                    for (int q = 0; q < 3; q++)
+                    {
+                        for (int i = 0; i < LEDControlData.strip.LEDCount; i += 3)
+                        {
+                            LEDControlData.strip.SetLED(i + q, Wheel((i + j) % 255));
+                        }
+
+                        rpi.Render();
+                        Thread.Sleep(waitTime);
+
+                        for (int i = 0; i < LEDControlData.strip.LEDCount; i += 3)
+                        {
+                            LEDControlData.strip.SetLED(i + q, Color.Black);
+                        }
+                    }
+                }
+            }
+        }
+
+        [HttpPost("appear_from_back")]
+        public void AppearFromBack([FromBody] JsonColor jsonColor, int waitTime = 50)
+        {
+            for(int j = LEDControlData.strip.LEDCount - 1; j >= 0; j--)
+            {
+                //for(int i = 0; i < )
+            }
+        }
+
+        [HttpPost("hyperspace")]
+        public void Hyperspace(int length = 5)
+        {
+            using (var rpi = new WS281x(LEDControlData.settings))
+            {
+                for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
+                {
+                    for (int j = 0; j < length; j++)
+                    {
+                        if (i + j < LEDControlData.strip.LEDCount)
+                        {
+                            LEDControlData.strip.SetLED(i + j, Color.White);
+                            rpi.Render();
+                        }
+                    }
+
+                    LEDControlData.strip.SetLED(i, Color.Black);
+                }
+
+                LEDControlData.strip.SetLED(LEDControlData.strip.LEDCount - 1, Color.Black);
+            }
+        }
+
 
         private Color Wheel(int pos)
         {
