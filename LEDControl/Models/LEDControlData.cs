@@ -21,7 +21,7 @@ namespace LEDControl.Models
             //Use 16 LEDs and GPIO Pin 18.
             //Set brightness to maximum (255)
             //Use Unknown as strip type. Then the type will be set in the native assembly.
-            strip = settings.AddController(LED_COUNT, Pin.Gpio18, StripType.WS2812_STRIP, ControllerType.PWM0, 255, false);
+            strip = settings.AddController(300, Pin.Gpio18, StripType.WS2812_STRIP, ControllerType.PWM0, 255, false);
         }
     }
 }
