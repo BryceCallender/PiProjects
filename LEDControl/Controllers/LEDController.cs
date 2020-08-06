@@ -170,9 +170,17 @@ namespace LEDControl.Controllers
         [HttpPost("appear_from_back")]
         public void AppearFromBack([FromBody] JsonColor jsonColor, int waitTime = 50)
         {
-            for(int j = LEDControlData.strip.LEDCount - 1; j >= 0; j--)
+            Color color = Color.FromArgb(LEDControlData.strip.Brightness, jsonColor.R, jsonColor.G, jsonColor.B);
+
+            for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
             {
-                //for(int i = 0; i < )
+                for (int j = LEDControlData.strip.LEDCount - 1; j >= 0; j--)
+                {
+                    for (int k = 0; k < i; k++)
+                    {
+
+                    }
+                }
             }
         }
 
@@ -200,7 +208,7 @@ namespace LEDControl.Controllers
                         }
 
                         LEDControlData.strip.SetLED(LEDControlData.strip.LEDCount - 1, Color.Black);
-                    });
+                    }).Start();
 
                     await Task.Delay(100);
                 }
@@ -218,22 +226,30 @@ namespace LEDControl.Controllers
             {
                 Stopwatch breathingTimer = new Stopwatch();
 
+                breathingTimer.Start();
+
                 while(breathingTimer.Elapsed.TotalSeconds < duration)
                 {
+                    LEDControlData.strip.Brightness = Lerp(0, 255, breathingTimer.Elapsed.TotalSeconds / duration);
+
                     LEDControlData.strip.SetAll(color);
 
-                    LEDControlData.strip.Brightness = Lerp(0, 255, breathingTimer.Elapsed.TotalSeconds);
+                    rpi.Render();
                 }
 
                 breathingTimer.Restart();
 
                 while (breathingTimer.Elapsed.TotalSeconds < duration)
                 {
+                    LEDControlData.strip.Brightness = Lerp(255, 0, breathingTimer.Elapsed.TotalSeconds / duration);
+
                     LEDControlData.strip.SetAll(color);
 
-                    LEDControlData.strip.Brightness = Lerp(255, 0, breathingTimer.Elapsed.TotalSeconds);
+                    rpi.Render();
                 }
             }
+
+            LEDControlData.strip.Brightness = 255;
         }
 
         [HttpPost("breathing_rainbow")]
