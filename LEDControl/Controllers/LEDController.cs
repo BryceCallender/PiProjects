@@ -250,9 +250,11 @@ namespace LEDControl.Controllers
             }
         }
 
-        private void Breathe(Color color, int duration)
+        private void Breathe(Color jsonColor, int duration)
         {
             byte oldBrightnessPercentage = LEDControlData.strip.Brightness;
+
+            Color color = Color.Empty;
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
@@ -264,7 +266,7 @@ namespace LEDControl.Controllers
                 {
                     LEDControlData.strip.Brightness = Lerp(0, 255, breathingTimer.Elapsed.TotalSeconds / duration);
 
-                    color = Color.FromArgb(255, (int)(color.R * BrightnessPercentage), (int)(color.G * BrightnessPercentage), (int)(color.B * BrightnessPercentage));
+                    color = Color.FromArgb(255, (int)(jsonColor.R * BrightnessPercentage), (int)(jsonColor.G * BrightnessPercentage), (int)(jsonColor.B * BrightnessPercentage));
 
                     Debug.WriteLine(color);
 
@@ -279,7 +281,7 @@ namespace LEDControl.Controllers
                 {
                     LEDControlData.strip.Brightness = Lerp(255, 0, breathingTimer.Elapsed.TotalSeconds / duration);
 
-                    color = Color.FromArgb(255, (int)(color.R * BrightnessPercentage), (int)(color.G * BrightnessPercentage), (int)(color.B * BrightnessPercentage));
+                    color = Color.FromArgb(255, (int)(jsonColor.R * BrightnessPercentage), (int)(jsonColor.G * BrightnessPercentage), (int)(jsonColor.B * BrightnessPercentage));
 
                     LEDControlData.strip.SetAll(color);
 
