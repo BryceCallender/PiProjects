@@ -21,6 +21,15 @@ namespace LEDControl.Controllers
     [Route("api/[controller]")]
     public class LEDController : Microsoft.AspNetCore.Mvc.Controller
     {
+
+        public double BrightnessPercentage 
+        { 
+            get
+            {
+                return LEDControlData.strip.Brightness / 255.0;
+            }
+        }
+
         // GET api/<controller>/led_status
         [HttpGet("led_status")]
         public string GetLEDStatus()
@@ -47,7 +56,7 @@ namespace LEDControl.Controllers
         [HttpPost("color_wipe")]
         public void ColorWipe([FromBody] JsonColor jsonColor)
         {
-            Color color = Color.FromArgb(255, jsonColor.R, jsonColor.G, jsonColor.B);
+            Color color = Color.FromArgb(255, (int)(jsonColor.R * BrightnessPercentage), (int)(jsonColor.G * BrightnessPercentage), (int)(jsonColor.B * BrightnessPercentage));
 
             Debug.WriteLine(color);
 
@@ -66,7 +75,7 @@ namespace LEDControl.Controllers
         [HttpPost("static_color")]
         public void StaticColor([FromBody] JsonColor jsonColor)
         {
-            Color color = Color.FromArgb(LEDControlData.strip.Brightness, jsonColor.R, jsonColor.G, jsonColor.B);
+            Color color = Color.FromArgb(LEDControlData.strip.Brightness, (int)(jsonColor.R * BrightnessPercentage), (int)(jsonColor.G * BrightnessPercentage), (int)(jsonColor.B * BrightnessPercentage));
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
@@ -116,7 +125,7 @@ namespace LEDControl.Controllers
         [HttpPost("theater_chase")]
         public void TheaterChase([FromBody] JsonColor jsonColor, int waitTime = 50, int iterations = 5)
         {
-            Color color = Color.FromArgb(LEDControlData.strip.Brightness, jsonColor.R, jsonColor.G, jsonColor.B);
+            Color color = Color.FromArgb(LEDControlData.strip.Brightness, (int)(jsonColor.R * BrightnessPercentage), (int)(jsonColor.G * BrightnessPercentage), (int)(jsonColor.B * BrightnessPercentage));
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
@@ -170,7 +179,7 @@ namespace LEDControl.Controllers
         [HttpPost("appear_from_back")]
         public void AppearFromBack([FromBody] JsonColor jsonColor, int waitTime = 50)
         {
-            Color color = Color.FromArgb(LEDControlData.strip.Brightness, jsonColor.R, jsonColor.G, jsonColor.B);
+            Color color = Color.FromArgb(LEDControlData.strip.Brightness, (int)(jsonColor.R * BrightnessPercentage), (int)(jsonColor.G * BrightnessPercentage), (int)(jsonColor.B * BrightnessPercentage));
 
             for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
             {
@@ -218,9 +227,9 @@ namespace LEDControl.Controllers
         [HttpPost("breathing")]
         public void Breathe([FromBody] JsonColor jsonColor, int duration = 2) //duration in terms of seconds
         {
-            LEDControlData.strip.Brightness = 255;
+            byte oldBrightnessPercentage = LEDControlData.strip.Brightness;
 
-            Color color = Color.FromArgb(LEDControlData.strip.Brightness, jsonColor.R, jsonColor.G, jsonColor.B);
+            Color color = Color.Empty;
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
@@ -231,6 +240,10 @@ namespace LEDControl.Controllers
                 while(breathingTimer.Elapsed.TotalSeconds < duration)
                 {
                     LEDControlData.strip.Brightness = Lerp(0, 255, breathingTimer.Elapsed.TotalSeconds / duration);
+
+                    color = Color.FromArgb(255, (int)(jsonColor.R * BrightnessPercentage), (int)(jsonColor.G * BrightnessPercentage), (int)(jsonColor.B * BrightnessPercentage));
+
+                    Debug.WriteLine(color);
 
                     LEDControlData.strip.SetAll(color);
 
@@ -243,13 +256,15 @@ namespace LEDControl.Controllers
                 {
                     LEDControlData.strip.Brightness = Lerp(255, 0, breathingTimer.Elapsed.TotalSeconds / duration);
 
+                    color = Color.FromArgb(255, (int)(jsonColor.R * BrightnessPercentage), (int)(jsonColor.G * BrightnessPercentage), (int)(jsonColor.B * BrightnessPercentage));
+
                     LEDControlData.strip.SetAll(color);
 
                     rpi.Render();
                 }
             }
 
-            LEDControlData.strip.Brightness = 255;
+            LEDControlData.strip.Brightness = oldBrightnessPercentage;
         }
 
         [HttpPost("breathing_rainbow")]
@@ -281,6 +296,5 @@ namespace LEDControl.Controllers
         {
             return (byte)((1 - time) * from + time * to);
         }
-
     }
 }
