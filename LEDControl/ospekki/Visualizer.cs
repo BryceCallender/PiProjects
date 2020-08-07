@@ -48,7 +48,7 @@ namespace LEDControl.ospekki
                 server = new Server();
                 server.Start();
                 //This should mean server stopped. Free resources now
-                timer.Dispose();
+                //timer.Dispose();
             }
             catch (Exception ex)
             {
@@ -203,6 +203,7 @@ namespace LEDControl.ospekki
         static void Timer1()
         {
             timer.Interval = 10;
+            timer.Enabled = true;
             timer.Elapsed += (s, e) =>
             {
                 using(var rpi = new WS281x(settings))
