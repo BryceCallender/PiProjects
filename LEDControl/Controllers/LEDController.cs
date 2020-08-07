@@ -13,6 +13,7 @@ using System.Net.Http;
 using System.Timers;
 using System.Threading;
 using System.Runtime.CompilerServices;
+using LEDControl.ospekki;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -254,7 +255,7 @@ namespace LEDControl.Controllers
         {
             byte oldBrightnessPercentage = LEDControlData.strip.Brightness;
 
-            Color color = Color.Empty;
+            Color color;
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
@@ -290,6 +291,14 @@ namespace LEDControl.Controllers
             }
 
             LEDControlData.strip.Brightness = oldBrightnessPercentage;
+        }
+
+        [HttpPost("audio_reactive")]
+        public void AudioReactiveLighting()
+        {
+            _ = new Visualizer();
+
+            //Send something saying the server started and if the client has connected as well?
         }
 
 
