@@ -206,37 +206,36 @@ namespace LEDControl.ospekki
             timer.Enabled = true;
             timer.Elapsed += (s, e) =>
             {
-                using(var rpi = new WS281x(settings))
+                if (strip != null)
                 {
-                    if (strip != null)
+                    using var rpi = new WS281x(settings);
+
+                    if (effect == 0)
                     {
-                        if (effect == 0)
-                        {
-                            BlinkingLeds();
-                        }
-
-                        if (effect == 1)
-                        {
-                            DimmingLeds();
-                        }
-
-                        if (effect == 2)
-                        {
-                            Lines();
-                        }
-
-                        if (effect == 3)
-                        {
-                            Height();
-                        }
-
-                        if (colorM == 1)
-                        {
-                            colorHue += 0.15;
-                        }
-
-                        rpi.Render();
+                        BlinkingLeds();
                     }
+
+                    if (effect == 1)
+                    {
+                        DimmingLeds();
+                    }
+
+                    if (effect == 2)
+                    {
+                        Lines();
+                    }
+
+                    if (effect == 3)
+                    {
+                        Height();
+                    }
+
+                    if (colorM == 1)
+                    {
+                        colorHue += 0.15;
+                    }
+
+                    rpi.Render();
                 }
                 
                 Timer1();

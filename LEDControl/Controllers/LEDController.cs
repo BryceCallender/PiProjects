@@ -301,6 +301,12 @@ namespace LEDControl.Controllers
             //Send something saying the server started and if the client has connected as well?
         }
 
+        [HttpPost("selective_colors")]
+        public void SelectedColors([FromBody] JArray colors)
+        {
+
+        }
+
 
         private Color Wheel(int pos)
         {

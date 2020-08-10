@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Threading;
 using System.Net;
+using Microsoft.Extensions.Logging;
 
 namespace LEDControl.ospekki
 {
@@ -18,11 +19,14 @@ namespace LEDControl.ospekki
         private byte[] buffer = new byte[256];
         private bool isRunning;
 
-        private int listenPort = 4445;
+        private readonly int listenPort = 4445;
 
-        public Server()
+        private readonly ILogger<Server> _logger;
+
+        public Server(ILogger<Server> logger = null)
         {
             udpClient = new UdpClient(listenPort);
+            _logger = logger;
         }
 
         public void Run()
@@ -41,7 +45,9 @@ namespace LEDControl.ospekki
                     IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Parse("192.168.1.234"), 4445);
 
                     // Blocks until a message returns on this socket from a remote host.
-                    buffer = udpClient.Receive(ref RemoteIpEndPoint);
+                    byte[] receivedData = udpClient.Receive(ref RemoteIpEndPoint);
+
+                    receivedData.CopyTo(buffer, 0);
 
                     Visualizer.GetData(buffer);
 
@@ -52,7 +58,7 @@ namespace LEDControl.ospekki
                 }
                 catch(Exception ex)
                 {
-                    Console.WriteLine(ex.ToString());
+                    _logger.LogError(ex.ToString());
                     isRunning = false;
                 }
             }
