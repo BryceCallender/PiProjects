@@ -30,7 +30,8 @@ namespace LEDControl.ospekki
         private static float minHeight = 50.0F;
         private static Color clr1 = Color.Yellow, clr2 = Color.White, clr3 = Color.Black;
 
-        public Visualizer()
+
+        public void Start()
         {
             StartServer();
             Timer1();
@@ -39,6 +40,11 @@ namespace LEDControl.ospekki
             {
                 colors[i] = Color.Empty;
             }
+        }
+
+        public void Stop()
+        {
+            server.StopServer();
         }
 
         static void StartServer()

@@ -39,10 +39,10 @@ namespace LEDControl.ospekki
                 {
                     //192.168.1.196 -> desktop
                     //192.168.1.234 -> pi
-                    udpClient.Connect("192.168.1.234", listenPort);
+                    udpClient.Connect("192.168.1.196", listenPort);
 
                     //IPEndPoint object will allow us to read datagrams sent from any source.
-                    IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Parse("192.168.1.234"), 4445);
+                    IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Parse("192.168.1.196"), 4445);
 
                     // Blocks until a message returns on this socket from a remote host.
                     byte[] receivedData = udpClient.Receive(ref RemoteIpEndPoint);

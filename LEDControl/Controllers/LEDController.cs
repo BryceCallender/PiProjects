@@ -22,6 +22,7 @@ namespace LEDControl.Controllers
     [Route("api/[controller]")]
     public class LEDController : Microsoft.AspNetCore.Mvc.Controller
     {
+        private static readonly Visualizer visualizer = new Visualizer();
 
         public double BrightnessPercentage 
         { 
@@ -294,9 +295,16 @@ namespace LEDControl.Controllers
         }
 
         [HttpPost("audio_reactive")]
-        public void AudioReactiveLighting()
+        public void AudioReactiveLighting([FromBody]AudioStatus status)
         {
-            _ = new Visualizer();
+            if (status.Enabled)
+            {
+                visualizer.Start();
+            }
+            else
+            {
+                visualizer.Stop();
+            }
 
             //Send something saying the server started and if the client has connected as well?
         }
