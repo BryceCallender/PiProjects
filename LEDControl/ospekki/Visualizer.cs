@@ -214,7 +214,7 @@ namespace LEDControl.ospekki
             {
                 if (strip != null)
                 {
-                    using var rpi = new WS281x(settings);
+                    //using var rpi = new WS281x(settings);
 
                     if (effect == 0)
                     {
@@ -241,7 +241,7 @@ namespace LEDControl.ospekki
                         colorHue += 0.15;
                     }
 
-                    rpi.Render();
+                    //rpi.Render();
                 }
                 
                 Timer1();
