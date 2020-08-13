@@ -21,7 +21,7 @@ namespace LEDControl.ospekki
         private bool isRunning;
 
         private readonly int listenPort = 4445;
-        private readonly string hostname = "192.168.1.234";
+        private readonly string hostname = "192.168.1.196";
 
         public Server()
         {
@@ -34,40 +34,41 @@ namespace LEDControl.ospekki
 
             //192.168.1.196 -> desktop
             //192.168.1.234 -> pi
-            udpClient.Connect(hostname, listenPort);
+            //udpClient.Connect(hostname, listenPort);
 
-            while (isRunning)
+            try
             {
-                try
+                while (isRunning)
                 {
-                    if (udpClient.Available > 0)
+                
+                    //IPEndPoint object will allow us to read datagrams sent from any source.
+                    IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Parse(hostname), listenPort);
+
+                    // Blocks until a message returns on this socket from a remote host.
+                    byte[] receivedData = udpClient.Receive(ref RemoteIpEndPoint);
+
+                    Debug.WriteLine(receivedData.Length);
+
+                    receivedData.CopyTo(buffer, 0);
+
+                    Visualizer.GetData(buffer);
+
+                    for (int i = 0; i < buffer.Length; i++)
                     {
-                        //IPEndPoint object will allow us to read datagrams sent from any source.
-                        IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Parse(hostname), listenPort);
-
-                        // Blocks until a message returns on this socket from a remote host.
-                        byte[] receivedData = udpClient.Receive(ref RemoteIpEndPoint);
-
-                        Debug.WriteLine(receivedData.Length);
-
-                        receivedData.CopyTo(buffer, 0);
-
-                        Visualizer.GetData(buffer);
-
-                        for (int i = 0; i < buffer.Length; i++)
-                        {
-                            buffer[i] = 0;
-                        }
+                        buffer[i] = 0;
                     }
                 }
-                catch(Exception ex)
-                {
-                    Debug.WriteLine(ex.ToString());
-                    isRunning = false;
-                }
+                
             }
-
-            udpClient.Close();
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                isRunning = false;
+            }
+            finally
+            {
+                udpClient.Close();
+            }
         }
 
         public void Start()

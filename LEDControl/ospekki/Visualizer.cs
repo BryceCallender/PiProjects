@@ -30,6 +30,7 @@ namespace LEDControl.ospekki
         private static float minHeight = 50.0F;
         private static Color clr1 = Color.Yellow, clr2 = Color.White, clr3 = Color.Black;
 
+        private static WS281x rpi;
 
         public void Start()
         {
@@ -44,6 +45,8 @@ namespace LEDControl.ospekki
 
         public void Stop()
         {
+            rpi.Dispose();
+            timer.Dispose();
             server.StopServer();
         }
 
@@ -176,6 +179,8 @@ namespace LEDControl.ospekki
                     //Set brightness to maximum (255)
                     //Use Unknown as strip type. Then the type will be set in the native assembly.
                     strip = settings.AddController(ledCount, Pin.Gpio18, StripType.WS2812_STRIP, ControllerType.PWM0, 255, false);
+
+                    rpi = new WS281x(settings);
                 }
             }
 
@@ -214,8 +219,6 @@ namespace LEDControl.ospekki
             {
                 if (strip != null)
                 {
-                    //using var rpi = new WS281x(settings);
-
                     if (effect == 0)
                     {
                         BlinkingLeds();
@@ -241,7 +244,7 @@ namespace LEDControl.ospekki
                         colorHue += 0.15;
                     }
 
-                    //rpi.Render();
+                    rpi.Render();
                 }
                 
                 Timer1();
