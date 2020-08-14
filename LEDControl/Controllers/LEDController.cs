@@ -22,7 +22,7 @@ namespace LEDControl.Controllers
     [Route("api/[controller]")]
     public class LEDController : Microsoft.AspNetCore.Mvc.Controller
     {
-        private static readonly Visualizer visualizer = new Visualizer();
+        private static Process visualizerProcess;
 
         public double BrightnessPercentage 
         { 
@@ -297,16 +297,30 @@ namespace LEDControl.Controllers
         [HttpPost("audio_reactive")]
         public void AudioReactiveLighting([FromBody]AudioStatus status)
         {
-            if (status.Enabled)
+            if(status.Enabled)
             {
-                visualizer.Start();
+                if(visualizerProcess == null)
+                {
+                    ProcessStartInfo processStartInfo = new ProcessStartInfo("java.exe", @" -jar /home/pi/music-visualizer-server/dist/MusicVisualizer.jar")
+                    {
+                        CreateNoWindow = true,
+                        UseShellExecute = false
+                    };
+
+                    visualizerProcess = new Process
+                    {
+                        StartInfo = processStartInfo
+                    };
+
+                    visualizerProcess.Start();
+                }
             }
             else
             {
-                visualizer.Stop();
+                visualizerProcess.Dispose();
+                visualizerProcess.Kill();
+                visualizerProcess = null;
             }
-
-            //Send something saying the server started and if the client has connected as well?
         }
 
         [HttpPost("selective_colors")]
