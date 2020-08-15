@@ -301,7 +301,7 @@ namespace LEDControl.Controllers
             {
                 if(visualizerProcess == null)
                 {
-                    ProcessStartInfo processStartInfo = new ProcessStartInfo("java.exe", @" -jar /home/pi/music-visualizer-server/dist/MusicVisualizer.jar")
+                    ProcessStartInfo processStartInfo = new ProcessStartInfo("sudo", @" java -jar /home/pi/music-visualizer-server/dist/MusicVisualizerServer.jar")
                     {
                         CreateNoWindow = true,
                         UseShellExecute = false
@@ -317,16 +317,31 @@ namespace LEDControl.Controllers
             }
             else
             {
-                visualizerProcess.Dispose();
                 visualizerProcess.Kill();
+                visualizerProcess.Dispose();
                 visualizerProcess = null;
             }
         }
 
         [HttpPost("selective_colors")]
-        public void SelectedColors([FromBody] JArray colors)
+        public void SelectedColors([FromBody] JObject colors)
         {
+            JArray colorArray = (JArray)colors["colors"];
 
+            using(var rpi = new WS281x(LEDControlData.settings))
+            {
+                int ledIndex = 0;
+
+                foreach (var key in colorArray)
+                {
+                    Color color = Color.FromArgb(key.Value<int>());
+                    Color finalColor = Color.FromArgb(255, (int)(color.R * (color.A / 255.0)), (int)(color.G * (color.A / 255.0)), (int)(color.B * (color.A / 255.0)));
+
+                    LEDControlData.strip.SetLED(ledIndex, finalColor);
+                }
+
+                rpi.Render();
+            }
         }
 
 

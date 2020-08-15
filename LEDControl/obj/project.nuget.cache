@@ -1,13 +1,17 @@
 {
   "version": 2,
-  "dgSpecHash": "gM6SeVAArFzfRC8It38k5aVTM085TWVAibPXlQqysjcDqbBT5iUGXLyKyO+O4NKZomkQOwsGrAW4+p/hdl4QKQ==",
+  "dgSpecHash": "EUhmWs9LgrmxFL+NIRwYEKqGx5Dw5v/O/p/R9q6ku+v4OHz+Fy3cZoohHLDiZVh58a+jdHlIFodTy66ainGLkw==",
   "success": true,
   "projectFilePath": "C:\\Users\\bryce\\Desktop\\PiProjects\\LEDControl\\LEDControl.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\bryce\\.nuget\\packages\\kenssamson.rpi-ws281x-csharp\\1.1.0\\kenssamson.rpi-ws281x-csharp.1.1.0.nupkg.sha512",
+    "C:\\Users\\bryce\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\3.1.7\\microsoft.aspnetcore.jsonpatch.3.1.7.nupkg.sha512",
+    "C:\\Users\\bryce\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\3.1.7\\microsoft.aspnetcore.mvc.newtonsoftjson.3.1.7.nupkg.sha512",
+    "C:\\Users\\bryce\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\bryce\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\3.1.6\\microsoft.extensions.dependencyinjection.3.1.6.nupkg.sha512",
     "C:\\Users\\bryce\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\3.1.6\\microsoft.extensions.dependencyinjection.abstractions.3.1.6.nupkg.sha512",
-    "C:\\Users\\bryce\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512"
+    "C:\\Users\\bryce\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
+    "C:\\Users\\bryce\\.nuget\\packages\\newtonsoft.json.bson\\1.0.2\\newtonsoft.json.bson.1.0.2.nupkg.sha512"
   ],
   "logs": []
 }

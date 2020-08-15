@@ -67,5 +67,8 @@ C:\Users\bryce\Desktop\PiProjects\LEDControl\obj\Debug\netcoreapp3.1\LEDControl.
 C:\Users\bryce\Desktop\PiProjects\LEDControl\obj\Debug\netcoreapp3.1\LEDControl.genruntimeconfig.cache
 C:\Users\bryce\Desktop\PiProjects\LEDControl\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.dll
 C:\Users\bryce\Desktop\PiProjects\LEDControl\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\bryce\Desktop\PiProjects\LEDControl\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.JsonPatch.dll
+C:\Users\bryce\Desktop\PiProjects\LEDControl\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+C:\Users\bryce\Desktop\PiProjects\LEDControl\bin\Debug\netcoreapp3.1\Newtonsoft.Json.Bson.dll
 C:\Users\bryce\Desktop\PiProjects\LEDControl\obj\Debug\netcoreapp3.1\LEDControl.csproj.CoreCompileInputs.cache
 C:\Users\bryce\Desktop\PiProjects\LEDControl\obj\Debug\netcoreapp3.1\LEDControl.MvcApplicationPartsAssemblyInfo.cache
