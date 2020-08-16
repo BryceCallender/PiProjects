@@ -324,17 +324,16 @@ namespace LEDControl.Controllers
         }
 
         [HttpPost("selective_colors")]
-        public void SelectedColors([FromBody] JObject colors)
+        public void SelectedColors([FromBody] JArray colors)
         {
-            JArray colorArray = (JArray)colors["colors"];
-
             using(var rpi = new WS281x(LEDControlData.settings))
             {
                 int ledIndex = 0;
 
-                foreach (var key in colorArray)
+                foreach (var key in colors)
                 {
-                    Color color = Color.FromArgb(key.Value<int>());
+                    long value = key.Value<long>();
+                    Color color = Color.FromArgb((int)value);
                     Color finalColor = Color.FromArgb(255, (int)(color.R * (color.A / 255.0)), (int)(color.G * (color.A / 255.0)), (int)(color.B * (color.A / 255.0)));
 
                     LEDControlData.strip.SetLED(ledIndex, finalColor);
