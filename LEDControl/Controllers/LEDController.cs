@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using LEDControl.Models;
@@ -9,11 +6,8 @@ using rpi_ws281x;
 using System.Drawing;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
-using System.Net.Http;
-using System.Timers;
 using System.Threading;
-using System.Runtime.CompilerServices;
-using LEDControl.ospekki;
+using System.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -23,6 +17,7 @@ namespace LEDControl.Controllers
     public class LEDController : Microsoft.AspNetCore.Mvc.Controller
     {
         private static Process visualizerProcess;
+        private static AbortRequest abortRequest;
 
         public double BrightnessPercentage 
         { 
@@ -47,18 +42,14 @@ namespace LEDControl.Controllers
 
             if(!LEDControlData.isEnabled)
             {
-                using (var rpi = new WS281x(LEDControlData.settings))
-                {
-                    LEDControlData.strip.SetAll(Color.Black);
-                    rpi.Render();
-                }
+                ClearLEDS();
             }
         }
 
         [HttpPost("color_wipe")]
         public void ColorWipe([FromBody] JsonColor jsonColor)
         {
-            Color color = Color.FromArgb(255, (int)(jsonColor.R * BrightnessPercentage), (int)(jsonColor.G * BrightnessPercentage), (int)(jsonColor.B * BrightnessPercentage));
+            Color color = jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
 
             Debug.WriteLine(color);
 
@@ -77,7 +68,7 @@ namespace LEDControl.Controllers
         [HttpPost("static_color")]
         public void StaticColor([FromBody] JsonColor jsonColor)
         {
-            Color color = Color.FromArgb(LEDControlData.strip.Brightness, (int)(jsonColor.R * BrightnessPercentage), (int)(jsonColor.G * BrightnessPercentage), (int)(jsonColor.B * BrightnessPercentage));
+            Color color = jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
@@ -127,7 +118,7 @@ namespace LEDControl.Controllers
         [HttpPost("theater_chase")]
         public void TheaterChase([FromBody] JsonColor jsonColor, int waitTime = 50, int iterations = 5)
         {
-            Color color = Color.FromArgb(LEDControlData.strip.Brightness, (int)(jsonColor.R * BrightnessPercentage), (int)(jsonColor.G * BrightnessPercentage), (int)(jsonColor.B * BrightnessPercentage));
+            Color color = jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
@@ -183,20 +174,19 @@ namespace LEDControl.Controllers
         {
             Color color = Color.FromArgb(LEDControlData.strip.Brightness, (int)(jsonColor.R * BrightnessPercentage), (int)(jsonColor.G * BrightnessPercentage), (int)(jsonColor.B * BrightnessPercentage));
 
-            for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
+            using (var rpi = new WS281x(LEDControlData.settings))
             {
-                for (int j = LEDControlData.strip.LEDCount - 1; j >= 0; j--)
+                for (int i = LEDControlData.strip.LEDCount - 1; i >= 0; i--)
                 {
-                    for (int k = 0; k < i; k++)
-                    {
-
-                    }
+                    LEDControlData.strip.SetLED(i, color);
                 }
+
+                rpi.Render();
             }
         }
 
         [HttpPost("hyperspace")]
-        public async Task Hyperspace(int length = 5, int numThreads = 5)
+        public async Task Hyperspace(int length = 5, int numThreads = 1)
         {
             using (var rpi = new WS281x(LEDControlData.settings))
             {
@@ -324,25 +314,74 @@ namespace LEDControl.Controllers
         }
 
         [HttpPost("selective_colors")]
-        public void SelectedColors([FromBody] JArray colors)
+        public void SelectedColors([FromBody] JObject colors)
         {
+            JArray colorArray = (JArray)colors["colors"];
+
             using(var rpi = new WS281x(LEDControlData.settings))
             {
                 int ledIndex = 0;
 
-                foreach (var key in colors)
+                foreach (var key in colorArray)
                 {
                     long value = key.Value<long>();
                     Color color = Color.FromArgb((int)value);
                     Color finalColor = Color.FromArgb(255, (int)(color.R * (color.A / 255.0)), (int)(color.G * (color.A / 255.0)), (int)(color.B * (color.A / 255.0)));
 
                     LEDControlData.strip.SetLED(ledIndex, finalColor);
+                    ledIndex++;
                 }
 
                 rpi.Render();
             }
         }
 
+        [HttpPost("chaser")]
+        public void ChaserTrail([FromBody] JsonColor jsonColor, int trail = 5)
+        {
+            Color color = jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
+
+            using (var rpi = new WS281x(LEDControlData.settings))
+            {
+                for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
+                {
+                    LEDControlData.strip.SetLED(i, color);
+
+                    FadeLEDS(i, trail);
+
+                    rpi.Render();
+
+                    Thread.Sleep(50);
+                }
+
+                ClearLEDS();
+            }
+        }
+
+        public void FadeLEDS(int start, int trailLength)
+        {
+            if (start == 0)
+                return;
+
+            for (int i = start; i > (start - trailLength) && (i - trailLength) >= 0; i--)
+            {
+                Color color = LEDControlData.strip.LEDs.ElementAt(i).Color;
+
+                double fadedBrightness = (color.A * (255.0 / trailLength) / 255.0);
+
+                LEDControlData.strip.SetLED(i, color.ApplyBrightnessToColor(fadedBrightness));
+            }
+        }
+
+        private void ClearLEDS()
+        {
+            using (var rpi = new WS281x(LEDControlData.settings))
+            {
+                LEDControlData.strip.SetAll(Color.Black);
+
+                rpi.Render();
+            }
+        }
 
         private Color Wheel(int pos)
         {
