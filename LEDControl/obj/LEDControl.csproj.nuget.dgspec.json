@@ -1,34 +1,33 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\bryce\\Desktop\\PiProjects\\LEDControl\\LEDControl.csproj": {}
+    "/Users/brycecallender/Desktop/PiProjects/LEDControl/LEDControl.csproj": {}
   },
   "projects": {
-    "C:\\Users\\bryce\\Desktop\\PiProjects\\LEDControl\\LEDControl.csproj": {
+    "/Users/brycecallender/Desktop/PiProjects/LEDControl/LEDControl.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\bryce\\Desktop\\PiProjects\\LEDControl\\LEDControl.csproj",
+        "projectUniqueName": "/Users/brycecallender/Desktop/PiProjects/LEDControl/LEDControl.csproj",
         "projectName": "LEDControl",
-        "projectPath": "C:\\Users\\bryce\\Desktop\\PiProjects\\LEDControl\\LEDControl.csproj",
-        "packagesPath": "C:\\Users\\bryce\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\bryce\\Desktop\\PiProjects\\LEDControl\\obj\\",
+        "projectPath": "/Users/brycecallender/Desktop/PiProjects/LEDControl/LEDControl.csproj",
+        "packagesPath": "/Users/brycecallender/.nuget/packages/",
+        "outputPath": "/Users/brycecallender/Desktop/PiProjects/LEDControl/obj/",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\bryce\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/brycecallender/.config/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "netcoreapp3.1"
+          "net5.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "netcoreapp3.1": {
+          "net5.0": {
+            "targetAlias": "net5.0",
             "projectReferences": {}
           }
         },
@@ -39,15 +38,16 @@
         }
       },
       "frameworks": {
-        "netcoreapp3.1": {
+        "net5.0": {
+          "targetAlias": "net5.0",
           "dependencies": {
             "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
               "target": "Package",
-              "version": "[3.1.7, )"
+              "version": "[5.0.2, )"
             },
             "Microsoft.Extensions.DependencyInjection": {
               "target": "Package",
-              "version": "[3.1.6, )"
+              "version": "[5.0.1, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
@@ -76,7 +76,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/5.0.102/RuntimeIdentifierGraph.json"
         }
       }
     }

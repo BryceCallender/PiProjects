@@ -1,15 +1,13 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using LEDControl.Models;
 using rpi_ws281x;
 using System.Drawing;
 using System.Diagnostics;
-using Newtonsoft.Json.Linq;
 using System.Threading;
 using System.Linq;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace LEDControl.Controllers
 {
@@ -17,15 +15,10 @@ namespace LEDControl.Controllers
     public class LEDController : Microsoft.AspNetCore.Mvc.Controller
     {
         private static Process visualizerProcess;
-        private static AbortRequest abortRequest;
+        private static string currentLEDMode = "";
 
-        public double BrightnessPercentage 
-        { 
-            get
-            {
-                return LEDControlData.strip.Brightness / 255.0;
-            }
-        }
+        public double BrightnessPercentage => LEDControlData.strip.Brightness / 255.0;
+        public bool ContinueAnimation(string ledMode) => currentLEDMode.Equals(ledMode);
 
         // GET api/<controller>/led_status
         [HttpGet("led_status")]
@@ -38,37 +31,57 @@ namespace LEDControl.Controllers
         [HttpPost("change_status")]
         public void ChangeLEDStatus()
         {
+            currentLEDMode = "";
+
             LEDControlData.isEnabled = !LEDControlData.isEnabled;
 
             if(!LEDControlData.isEnabled)
             {
                 ClearLEDS();
+                
             }
         }
 
         [HttpPost("color_wipe")]
-        public void ColorWipe([FromBody] JsonColor jsonColor)
+        public void ColorWipe([FromBody] JsonData jsonData)
         {
-            Color color = jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
+            currentLEDMode = nameof(ColorWipe);
+
+            Color color = jsonData.jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
+            bool continueLoop = false;
 
             Debug.WriteLine(color);
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
-                for(int i = 0; i < LEDControlData.strip.LEDCount; i++)
+                do
                 {
-                    LEDControlData.strip.SetLED(i, color);
-                    rpi.Render();
+                    Debug.WriteLine("Color Wipe");
+                    ClearLEDS();
 
-                    Thread.Sleep(50);
-                }
+                    for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
+                    {
+                        continueLoop = ContinueAnimation(nameof(ColorWipe));
+                        if(continueLoop == false)
+                        {
+                            break;
+                        }
+
+                        LEDControlData.strip.SetLED(i, color);
+                        rpi.Render();
+
+                        Thread.Sleep(50);
+                    }
+                } while (jsonData.Loop && continueLoop);
             }
         }
 
         [HttpPost("static_color")]
-        public void StaticColor([FromBody] JsonColor jsonColor)
+        public void StaticColor([FromBody] JsonData jsonData)
         {
-            Color color = jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
+            currentLEDMode = nameof(StaticColor);
+
+            Color color = jsonData.jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
@@ -80,6 +93,8 @@ namespace LEDControl.Controllers
         [HttpPost("rainbow")]
         public void Rainbow(int iterations = 1)
         {
+            currentLEDMode = nameof(Rainbow);
+
             using (var rpi = new WS281x(LEDControlData.settings))
             {
                 for (int j = 0; j < 256 * iterations; j++)
@@ -99,6 +114,8 @@ namespace LEDControl.Controllers
         [HttpPost("rainbow_cycle")]
         public void RainbowCycle(int iterations = 5)
         {
+            currentLEDMode = nameof(RainbowCycle);
+
             using (var rpi = new WS281x(LEDControlData.settings))
             {
                 for (int j = 0; j < 256 * iterations; j++)
@@ -118,6 +135,8 @@ namespace LEDControl.Controllers
         [HttpPost("theater_chase")]
         public void TheaterChase([FromBody] JsonColor jsonColor, int waitTime = 50, int iterations = 5)
         {
+            currentLEDMode = nameof(TheaterChase);
+
             Color color = jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
 
             using (var rpi = new WS281x(LEDControlData.settings))
@@ -146,6 +165,8 @@ namespace LEDControl.Controllers
         [HttpPost("theater_chase_rainbow")]
         public void TheaterChaseRainbow(int waitTime = 50, int iterations = 5)
         {
+            currentLEDMode = nameof(TheaterChaseRainbow);
+
             using (var rpi = new WS281x(LEDControlData.settings))
             {
                 for (int j = 0; j < iterations; j++)
@@ -170,24 +191,45 @@ namespace LEDControl.Controllers
         }
 
         [HttpPost("appear_from_back")]
-        public void AppearFromBack([FromBody] JsonColor jsonColor, int waitTime = 50)
+        public void AppearFromBack([FromBody] JsonData jsonData)
         {
-            Color color = Color.FromArgb(LEDControlData.strip.Brightness, (int)(jsonColor.R * BrightnessPercentage), (int)(jsonColor.G * BrightnessPercentage), (int)(jsonColor.B * BrightnessPercentage));
+            currentLEDMode = nameof(AppearFromBack);
+
+            Color color = jsonData.jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
+            bool continueLoop = false;
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
-                for (int i = LEDControlData.strip.LEDCount - 1; i >= 0; i--)
+                do
                 {
-                    LEDControlData.strip.SetLED(i, color);
-                }
+                    ClearLEDS();
 
-                rpi.Render();
+                    for (int i = LEDControlData.strip.LEDCount - 1; i >= 0; i--)
+                    {
+                        continueLoop = ContinueAnimation(nameof(AppearFromBack));
+                        if (continueLoop == false)
+                        {
+                            break;
+                        }
+
+                        LEDControlData.strip.SetLED(i, color);
+                        rpi.Render();
+                    }
+
+                    if(jsonData.Iterations > 0)
+                    {
+                        jsonData.Iterations -= 1;
+                    }
+
+                } while (jsonData.Loop && continueLoop || jsonData.Iterations > 0);
             }
         }
 
         [HttpPost("hyperspace")]
         public async Task Hyperspace(int length = 5, int numThreads = 1)
         {
+            currentLEDMode = nameof(Hyperspace);
+
             using (var rpi = new WS281x(LEDControlData.settings))
             {
                 for(int thread = 0; thread < numThreads; thread++)
@@ -219,21 +261,25 @@ namespace LEDControl.Controllers
         [HttpPost("breathing")]
         public void Breathe([FromBody] JsonColor jsonColor, int duration = 2) //duration in terms of seconds
         {
+            currentLEDMode = nameof(Breathe);
+
             Breathe(Color.FromArgb(255, jsonColor.R, jsonColor.G, jsonColor.B), duration);
         }
 
         [HttpPost("breathing_rainbow")]
         public void BreathingRainbow(int duration = 2)
         {
+            currentLEDMode = nameof(BreathingRainbow);
+
             Color[] colors = new Color[]
             {
                 Color.Red,
-                Color.DarkOrange,
+                Color.Orange,
                 Color.Yellow,
                 Color.Green,
                 Color.Blue,
                 Color.Purple,
-                Color.DeepPink
+                Color.Pink
             };
 
             foreach(Color color in colors)
@@ -258,9 +304,7 @@ namespace LEDControl.Controllers
                 {
                     LEDControlData.strip.Brightness = Lerp(0, 255, breathingTimer.Elapsed.TotalSeconds / duration);
 
-                    color = Color.FromArgb(255, (int)(jsonColor.R * BrightnessPercentage), (int)(jsonColor.G * BrightnessPercentage), (int)(jsonColor.B * BrightnessPercentage));
-
-                    Debug.WriteLine(color);
+                    color = jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
 
                     LEDControlData.strip.SetAll(color);
 
@@ -273,7 +317,7 @@ namespace LEDControl.Controllers
                 {
                     LEDControlData.strip.Brightness = Lerp(255, 0, breathingTimer.Elapsed.TotalSeconds / duration);
 
-                    color = Color.FromArgb(255, (int)(jsonColor.R * BrightnessPercentage), (int)(jsonColor.G * BrightnessPercentage), (int)(jsonColor.B * BrightnessPercentage));
+                    color = jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
 
                     LEDControlData.strip.SetAll(color);
 
@@ -285,7 +329,7 @@ namespace LEDControl.Controllers
         }
 
         [HttpPost("audio_reactive")]
-        public void AudioReactiveLighting([FromBody]AudioStatus status)
+        public void AudioReactiveLighting([FromBody] AudioStatus status)
         {
             if(status.Enabled)
             {
@@ -316,9 +360,11 @@ namespace LEDControl.Controllers
         [HttpPost("selective_colors")]
         public void SelectedColors([FromBody] JObject colors)
         {
+            currentLEDMode = nameof(SelectedColors);
+
             JArray colorArray = (JArray)colors["colors"];
 
-            using(var rpi = new WS281x(LEDControlData.settings))
+            using (var rpi = new WS281x(LEDControlData.settings))
             {
                 int ledIndex = 0;
 
@@ -337,39 +383,59 @@ namespace LEDControl.Controllers
         }
 
         [HttpPost("chaser")]
-        public void ChaserTrail([FromBody] JsonColor jsonColor, int trail = 5)
+        public void Chaser([FromBody] JsonData jsonData)
         {
-            Color color = jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
+            currentLEDMode = nameof(Chaser);
+
+            Color color = jsonData.jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
+            bool continueLoop = false;
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
-                for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
+                int interval = LEDControlData.strip.LEDCount / 1000;
+                do
                 {
-                    LEDControlData.strip.SetLED(i, color);
+                    for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
+                    {
+                        continueLoop = ContinueAnimation(nameof(Chaser));
+                        if (continueLoop == false)
+                        {
+                            break;
+                        }
 
-                    FadeLEDS(i, trail);
+                        LEDControlData.strip.SetLED(i, color);
+                        rpi.Render();
 
-                    rpi.Render();
+                        Thread.Sleep(interval);
+                    }
 
-                    Thread.Sleep(50);
-                }
+                    Color lastLEDColor = LEDControlData.strip.LEDs.ElementAt(LEDControlData.strip.LEDCount - 1).Color;
 
-                ClearLEDS();
-            }
-        }
+                    while (lastLEDColor != Color.Black)
+                    {
+                        for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
+                        {
+                            Debug.WriteLine($"From {0} to {i + 1}");
+                            Color ledColor = LEDControlData.strip.LEDs.ElementAt(i).Color;
 
-        public void FadeLEDS(int start, int trailLength)
-        {
-            if (start == 0)
-                return;
+                            for(int j = 0; j > i; j++)
+                            {
+                                continueLoop = ContinueAnimation(nameof(Chaser));
+                                if (continueLoop == false)
+                                {
+                                    return;
+                                }
 
-            for (int i = start; i > (start - trailLength) && (i - trailLength) >= 0; i--)
-            {
-                Color color = LEDControlData.strip.LEDs.ElementAt(i).Color;
+                                LEDControlData.strip.SetLED(j, ledColor.FadeToBlackBy(BrightnessPercentage * interval));
 
-                double fadedBrightness = (color.A * (255.0 / trailLength) / 255.0);
+                                Thread.Sleep(interval);
+                            }
+                        }
 
-                LEDControlData.strip.SetLED(i, color.ApplyBrightnessToColor(fadedBrightness));
+                        rpi.Render();
+                    }
+
+                } while (jsonData.Loop && continueLoop);
             }
         }
 
