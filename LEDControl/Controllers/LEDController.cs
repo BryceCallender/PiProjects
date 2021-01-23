@@ -448,6 +448,8 @@ namespace LEDControl.Controllers
 
         private void ClearLEDS()
         {
+            _logger.LogInformation("Clearing All LEDs");
+
             using (var rpi = new WS281x(LEDControlData.settings))
             {
                 LEDControlData.strip.SetAll(Color.Black);
