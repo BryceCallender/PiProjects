@@ -426,7 +426,7 @@ namespace LEDControl.Controllers
                                     return;
                                 }
 
-                                LEDControlData.strip.SetLED(j, ledColor.FadeToBlackBy(BrightnessPercentage * interval));
+                                LEDControlData.strip.SetLED(j, ledColor.FadeToBlackBy(interval));
 
                                 Thread.Sleep(interval);
                             }

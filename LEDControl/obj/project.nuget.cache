@@ -1,15 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "Qu5zqgcH8tiRAjbFn0UI6yXZI8qblaIb/r25JsGvXlzSJyFETJazVhZfrkcZY+ygPuSxP9fhVNmlxBlP3Y7jow==",
+  "dgSpecHash": "5j7MdKLcyy3V0pn/QSK7ACqy5eJUyDMOVw5ijpC8oN1kR0dlgozrId9XM7MZnZQUND2V6F9hrWTYdvfSfeIRBA==",
   "success": true,
   "projectFilePath": "/Users/brycecallender/Desktop/PiProjects/LEDControl/LEDControl.csproj",
   "expectedPackageFiles": [
     "/Users/brycecallender/.nuget/packages/kenssamson.rpi-ws281x-csharp/1.1.0/kenssamson.rpi-ws281x-csharp.1.1.0.nupkg.sha512",
-    "/Users/brycecallender/.nuget/packages/microsoft.aspnetcore.jsonpatch/5.0.2/microsoft.aspnetcore.jsonpatch.5.0.2.nupkg.sha512",
-    "/Users/brycecallender/.nuget/packages/microsoft.aspnetcore.mvc.newtonsoftjson/5.0.2/microsoft.aspnetcore.mvc.newtonsoftjson.5.0.2.nupkg.sha512",
+    "/Users/brycecallender/.nuget/packages/microsoft.aspnetcore.jsonpatch/3.1.7/microsoft.aspnetcore.jsonpatch.3.1.7.nupkg.sha512",
+    "/Users/brycecallender/.nuget/packages/microsoft.aspnetcore.mvc.newtonsoftjson/3.1.7/microsoft.aspnetcore.mvc.newtonsoftjson.3.1.7.nupkg.sha512",
     "/Users/brycecallender/.nuget/packages/microsoft.csharp/4.7.0/microsoft.csharp.4.7.0.nupkg.sha512",
-    "/Users/brycecallender/.nuget/packages/microsoft.extensions.dependencyinjection/5.0.1/microsoft.extensions.dependencyinjection.5.0.1.nupkg.sha512",
-    "/Users/brycecallender/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/5.0.0/microsoft.extensions.dependencyinjection.abstractions.5.0.0.nupkg.sha512",
+    "/Users/brycecallender/.nuget/packages/microsoft.extensions.dependencyinjection/3.1.6/microsoft.extensions.dependencyinjection.3.1.6.nupkg.sha512",
+    "/Users/brycecallender/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/3.1.6/microsoft.extensions.dependencyinjection.abstractions.3.1.6.nupkg.sha512",
     "/Users/brycecallender/.nuget/packages/newtonsoft.json/12.0.3/newtonsoft.json.12.0.3.nupkg.sha512",
     "/Users/brycecallender/.nuget/packages/newtonsoft.json.bson/1.0.2/newtonsoft.json.bson.1.0.2.nupkg.sha512"
   ],
