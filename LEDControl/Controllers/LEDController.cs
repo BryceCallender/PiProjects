@@ -8,17 +8,25 @@ using System.Threading;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace LEDControl.Controllers
 {
     [Route("api/[controller]")]
     public class LEDController : Microsoft.AspNetCore.Mvc.Controller
     {
+        private readonly ILogger _logger;
+
         private static Process visualizerProcess;
         private static string currentLEDMode = "";
 
         public double BrightnessPercentage => LEDControlData.strip.Brightness / 255.0;
         public bool ContinueAnimation(string ledMode) => currentLEDMode.Equals(ledMode);
+
+        public LEDController(ILogger<LEDController> logger)
+        {
+             _logger = logger;
+        }
 
         // GET api/<controller>/led_status
         [HttpGet("led_status")]
@@ -38,7 +46,6 @@ namespace LEDControl.Controllers
             if(!LEDControlData.isEnabled)
             {
                 ClearLEDS();
-                
             }
         }
 
@@ -50,13 +57,13 @@ namespace LEDControl.Controllers
             Color color = jsonData.jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
             bool continueLoop = false;
 
-            Debug.WriteLine(color);
+            _logger.LogInformation(color.ToString());
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
                 do
                 {
-                    Debug.WriteLine("Color Wipe");
+                    _logger.LogInformation("Color Wipe");
                     ClearLEDS();
 
                     for (int i = 0; i < LEDControlData.strip.LEDCount; i++)

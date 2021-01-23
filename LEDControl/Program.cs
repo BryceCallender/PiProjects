@@ -14,6 +14,10 @@ namespace LEDControl
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureLogging((hostingContext, logging) =>
+                {
+                    logging.AddConsole();
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     //IPHostEntry heserver = Dns.GetHostEntry(Dns.GetHostName());
@@ -21,7 +25,7 @@ namespace LEDControl
 
                     //foreach(IPAddress address in heserver.AddressList)
                     //{
-                    //    if(address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork && address.AddressFamily.)
+                    //    if(address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                     //    {
                     //        networkAddress = address.ToString();
                     //        break;
@@ -29,7 +33,7 @@ namespace LEDControl
                     //}
 
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls($"http://192.168.1.235:5000");
+                    webBuilder.UseUrls($"http://192.168.1.56:5000");
                 });
     }
 }
