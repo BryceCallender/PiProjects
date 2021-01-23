@@ -67,7 +67,7 @@ namespace LEDControl.Controllers
                 do
                 {
                     _logger.LogInformation("Color Wipe");
-                    ClearLEDS(rpi);
+                    ClearLEDS(rpi, jsonData.WaitTime);
 
                     for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
                     {
@@ -81,7 +81,10 @@ namespace LEDControl.Controllers
                         LEDControlData.strip.SetLED(i, color);
                         rpi.Render();
 
-                        Thread.Sleep(16);
+			if(jsonData.WaitTime > 0) 
+			{
+			    Thread.Sleep(jsonData.WaitTime);
+			}
                     }
                 } while (jsonData.Loop && continueLoop);
             }
@@ -457,17 +460,17 @@ namespace LEDControl.Controllers
             if (delay == 0)
             {
                 LEDControlData.strip.SetAll(Color.Black);
-            }
+                rpi.Render();
+	    }
             else
             {
                 for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
                 {
                     LEDControlData.strip.SetLED(i, Color.Black);
+		    rpi.Render();
                     Thread.Sleep(delay);
                 }
             }
-
-            rpi.Render();
         }
 
         private Color Wheel(int pos)
