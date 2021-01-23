@@ -60,18 +60,16 @@ namespace LEDControl.Controllers
             Color color = jsonData.jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
             bool continueLoop = false;
 
-            _logger.LogInformation(color.ToString());
+            _logger.LogInformation($"{currentLEDMode} with Color: {color}");
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
                 do
                 {
-                    _logger.LogInformation("Color Wipe");
                     ClearLEDS(rpi, jsonData.WaitTime);
 
                     for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
                     {
-                        _logger.LogInformation("" + i);
                         continueLoop = ContinueAnimation(nameof(ColorWipe));
                         if(continueLoop == false)
                         {
@@ -81,10 +79,10 @@ namespace LEDControl.Controllers
                         LEDControlData.strip.SetLED(i, color);
                         rpi.Render();
 
-			if(jsonData.WaitTime > 0) 
-			{
-			    Thread.Sleep(jsonData.WaitTime);
-			}
+			            if(jsonData.WaitTime > 0) 
+			            {
+			                Thread.Sleep(jsonData.WaitTime);
+			            }
                     }
                 } while (jsonData.Loop && continueLoop);
             }
@@ -111,17 +109,13 @@ namespace LEDControl.Controllers
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
-                for (int j = 0; j < 256 * iterations; j++)
+                for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
                 {
-                    for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
-                    {
-                        Color color = Wheel((i + j) & 255);
-                        LEDControlData.strip.SetLED(i, color);
-                    }
-
-                    rpi.Render();
-                    Thread.Sleep(20);
+                    Color color = Wheel(i & 255);
+                    LEDControlData.strip.SetLED(i, color);
                 }
+
+                rpi.Render();
             }
         }
 
@@ -273,11 +267,17 @@ namespace LEDControl.Controllers
         }
 
         [HttpPost("breathing")]
-        public void Breathe([FromBody] JsonColor jsonColor, int duration = 2) //duration in terms of seconds
+        public void Breathe([FromBody] JsonData jsonData) //duration in terms of seconds
         {
             currentLEDMode = nameof(Breathe);
 
-            Breathe(Color.FromArgb(255, jsonColor.R, jsonColor.G, jsonColor.B), duration);
+            do
+            {
+                Breathe(jsonData.jsonColor.ApplyBrightnessToColor(BrightnessPercentage), jsonData.Duration ?? 2);
+
+            } while (jsonData.Loop);
+
+            
         }
 
         [HttpPost("breathing_rainbow")]
@@ -461,13 +461,13 @@ namespace LEDControl.Controllers
             {
                 LEDControlData.strip.SetAll(Color.Black);
                 rpi.Render();
-	    }
+	        }
             else
             {
                 for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
                 {
                     LEDControlData.strip.SetLED(i, Color.Black);
-		    rpi.Render();
+		            rpi.Render();
                     Thread.Sleep(delay);
                 }
             }

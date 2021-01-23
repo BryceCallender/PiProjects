@@ -11,10 +11,10 @@ namespace LEDControl.Models
 
         public int WaitTime { get; set; }
         public bool Loop { get; set; }
-        public int Iterations { get; set; } = 1;
-        public int Length { get; set; }
-        public int Duration { get; set; }
-        public int Trail { get; set; }
+        public int? Iterations { get; set; }
+        public int? Length { get; set; }
+        public int? Duration { get; set; }
+        public int? Trail { get; set; }
 
     }
 
