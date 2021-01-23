@@ -33,7 +33,7 @@ namespace LEDControl
                     //}
 
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls($"http://192.168.1.56:5000");
+                    webBuilder.UseUrls($"http://192.168.1.235:5000");
                 });
     }
 }

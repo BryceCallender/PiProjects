@@ -20,8 +20,8 @@ namespace LEDControl.Controllers
         private static Process visualizerProcess;
         private static string currentLEDMode = "";
 
-        public double BrightnessPercentage => LEDControlData.strip.Brightness / 255.0;
-        public bool ContinueAnimation(string ledMode) => currentLEDMode.Equals(ledMode);
+        private static double BrightnessPercentage => LEDControlData.strip.Brightness / 255.0;
+        private static bool ContinueAnimation(string ledMode) => currentLEDMode.Equals(ledMode);
 
         public LEDController(ILogger<LEDController> logger)
         {
@@ -45,7 +45,10 @@ namespace LEDControl.Controllers
 
             if(!LEDControlData.isEnabled)
             {
-                ClearLEDS();
+                using (var rpi = new WS281x(LEDControlData.settings))
+                {
+                    ClearLEDS(rpi);
+                }
             }
         }
 
@@ -64,10 +67,11 @@ namespace LEDControl.Controllers
                 do
                 {
                     _logger.LogInformation("Color Wipe");
-                    ClearLEDS();
+                    ClearLEDS(rpi);
 
                     for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
                     {
+                        _logger.LogInformation("" + i);
                         continueLoop = ContinueAnimation(nameof(ColorWipe));
                         if(continueLoop == false)
                         {
@@ -77,7 +81,7 @@ namespace LEDControl.Controllers
                         LEDControlData.strip.SetLED(i, color);
                         rpi.Render();
 
-                        Thread.Sleep(50);
+                        Thread.Sleep(16);
                     }
                 } while (jsonData.Loop && continueLoop);
             }
@@ -209,7 +213,7 @@ namespace LEDControl.Controllers
             {
                 do
                 {
-                    ClearLEDS();
+                    ClearLEDS(rpi);
 
                     for (int i = LEDControlData.strip.LEDCount - 1; i >= 0; i--)
                     {
@@ -446,16 +450,24 @@ namespace LEDControl.Controllers
             }
         }
 
-        private void ClearLEDS()
+        private void ClearLEDS(WS281x rpi, int delay = 0)
         {
             _logger.LogInformation("Clearing All LEDs");
 
-            using (var rpi = new WS281x(LEDControlData.settings))
+            if (delay == 0)
             {
                 LEDControlData.strip.SetAll(Color.Black);
-
-                rpi.Render();
             }
+            else
+            {
+                for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
+                {
+                    LEDControlData.strip.SetLED(i, Color.Black);
+                    Thread.Sleep(delay);
+                }
+            }
+
+            rpi.Render();
         }
 
         private Color Wheel(int pos)
