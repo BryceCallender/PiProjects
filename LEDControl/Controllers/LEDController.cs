@@ -56,11 +56,12 @@ namespace LEDControl.Controllers
         public void ColorWipe([FromBody] JsonData jsonData)
         {
             currentLEDMode = nameof(ColorWipe);
+            LEDControlData.isEnabled = true;
+
+            _logger.LogInformation($"{currentLEDMode}");
 
             Color color = jsonData.jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
             bool continueLoop = false;
-
-            _logger.LogInformation($"{currentLEDMode} with Color: {color}");
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
@@ -92,6 +93,9 @@ namespace LEDControl.Controllers
         public void StaticColor([FromBody] JsonData jsonData)
         {
             currentLEDMode = nameof(StaticColor);
+            LEDControlData.isEnabled = true;
+
+            _logger.LogInformation($"{currentLEDMode}");
 
             Color color = jsonData.jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
 
@@ -106,6 +110,9 @@ namespace LEDControl.Controllers
         public void Rainbow(int iterations = 1)
         {
             currentLEDMode = nameof(Rainbow);
+            LEDControlData.isEnabled = true;
+
+            _logger.LogInformation($"{currentLEDMode}");
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
@@ -123,6 +130,9 @@ namespace LEDControl.Controllers
         public void RainbowCycle([FromBody] JsonData jsonData)
         {
             currentLEDMode = nameof(RainbowCycle);
+            LEDControlData.isEnabled = true;
+
+            _logger.LogInformation($"{currentLEDMode}");
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
@@ -152,6 +162,9 @@ namespace LEDControl.Controllers
         public void TheaterChase([FromBody] JsonColor jsonColor, int waitTime = 50, int iterations = 5)
         {
             currentLEDMode = nameof(TheaterChase);
+            LEDControlData.isEnabled = true;
+
+            _logger.LogInformation($"{currentLEDMode}");
 
             Color color = jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
 
@@ -182,6 +195,9 @@ namespace LEDControl.Controllers
         public void TheaterChaseRainbow(int waitTime = 50, int iterations = 5)
         {
             currentLEDMode = nameof(TheaterChaseRainbow);
+            LEDControlData.isEnabled = true;
+
+            _logger.LogInformation($"{currentLEDMode}");
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
@@ -210,6 +226,9 @@ namespace LEDControl.Controllers
         public void AppearFromBack([FromBody] JsonData jsonData)
         {
             currentLEDMode = nameof(AppearFromBack);
+            LEDControlData.isEnabled = true;
+
+            _logger.LogInformation($"{currentLEDMode}");
 
             Color color = jsonData.jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
             bool continueLoop = false;
@@ -245,6 +264,9 @@ namespace LEDControl.Controllers
         public async Task Hyperspace(int length = 5, int numThreads = 1)
         {
             currentLEDMode = nameof(Hyperspace);
+            LEDControlData.isEnabled = true;
+
+            _logger.LogInformation($"{currentLEDMode}");
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
@@ -275,9 +297,10 @@ namespace LEDControl.Controllers
         }
 
         [HttpPost("breathing")]
-        public void Breathe([FromBody] JsonData jsonData) //duration in terms of seconds
+        public void Breathe([FromBody] JsonData jsonData)
         {
             currentLEDMode = nameof(Breathe);
+            LEDControlData.isEnabled = true;
 
             do
             {
@@ -292,6 +315,9 @@ namespace LEDControl.Controllers
         public void BreathingRainbow(int duration = 2)
         {
             currentLEDMode = nameof(BreathingRainbow);
+            LEDControlData.isEnabled = true;
+
+            _logger.LogInformation($"{currentLEDMode}");
 
             Color[] colors = new Color[]
             {
@@ -353,7 +379,12 @@ namespace LEDControl.Controllers
         [HttpPost("audio_reactive")]
         public void AudioReactiveLighting([FromBody] AudioStatus status)
         {
-            if(status.Enabled)
+            currentLEDMode = nameof(AudioReactiveLighting);
+            LEDControlData.isEnabled = true;
+
+            _logger.LogInformation($"{currentLEDMode}");
+
+            if (status.Enabled)
             {
                 if(visualizerProcess == null)
                 {
@@ -383,6 +414,9 @@ namespace LEDControl.Controllers
         public void SelectedColors([FromBody] JObject colors)
         {
             currentLEDMode = nameof(SelectedColors);
+            LEDControlData.isEnabled = true;
+
+            _logger.LogInformation($"{currentLEDMode}");
 
             JArray colorArray = (JArray)colors["colors"];
 
@@ -408,6 +442,9 @@ namespace LEDControl.Controllers
         public void Chaser([FromBody] JsonData jsonData)
         {
             currentLEDMode = nameof(Chaser);
+            LEDControlData.isEnabled = true;
+
+            _logger.LogInformation($"{currentLEDMode}");
 
             Color color = jsonData.jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
             bool continueLoop = false;
