@@ -314,19 +314,23 @@
     ]
   },
   "packageFolders": {
-    "/home/pi/.nuget/packages/": {}
+    "/Users/brycecallender/.nuget/packages/": {},
+    "/usr/local/share/dotnet/sdk/NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/pi/Github/PiProjects/LEDControl/LEDControl.csproj",
+      "projectUniqueName": "/Users/brycecallender/Desktop/PiProjects/LEDControl/LEDControl.csproj",
       "projectName": "LEDControl",
-      "projectPath": "/home/pi/Github/PiProjects/LEDControl/LEDControl.csproj",
-      "packagesPath": "/home/pi/.nuget/packages/",
-      "outputPath": "/home/pi/Github/PiProjects/LEDControl/obj/",
+      "projectPath": "/Users/brycecallender/Desktop/PiProjects/LEDControl/LEDControl.csproj",
+      "packagesPath": "/Users/brycecallender/.nuget/packages/",
+      "outputPath": "/Users/brycecallender/Desktop/PiProjects/LEDControl/obj/",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
+      ],
       "configFilePaths": [
-        "/home/pi/.nuget/NuGet/NuGet.Config"
+        "/Users/brycecallender/.config/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net5.0"
@@ -385,7 +389,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/home/pi/dotnet/sdk/5.0.102/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/5.0.102/RuntimeIdentifierGraph.json"
       }
     }
   }

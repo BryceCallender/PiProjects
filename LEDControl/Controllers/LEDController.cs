@@ -120,23 +120,31 @@ namespace LEDControl.Controllers
         }
 
         [HttpPost("rainbow_cycle")]
-        public void RainbowCycle(int iterations = 5)
+        public void RainbowCycle([FromBody] JsonData jsonData)
         {
             currentLEDMode = nameof(RainbowCycle);
 
             using (var rpi = new WS281x(LEDControlData.settings))
             {
-                for (int j = 0; j < 256 * iterations; j++)
+                do
                 {
-                    for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
+                    if(jsonData.Iterations > 0)
                     {
-                        Color color = Wheel(((i * 256 / LEDControlData.strip.LEDCount) + j) & 255);
-                        LEDControlData.strip.SetLED(i, color);
-                    }
+                        for (int j = 0; j < 256 * jsonData.Iterations; j++)
+                        {
+                            for (int i = 0; i < LEDControlData.strip.LEDCount; i++)
+                            {
+                                Color color = Wheel(((i * 256 / LEDControlData.strip.LEDCount) + j) & 255);
+                                LEDControlData.strip.SetLED(i, color);
+                            }
 
-                    rpi.Render();
-                    Thread.Sleep(20);
-                }
+                            rpi.Render();
+                            Thread.Sleep(20);
+                        }
+                    }
+                    
+                } while (jsonData.Loop);
+                
             }
         }
 
