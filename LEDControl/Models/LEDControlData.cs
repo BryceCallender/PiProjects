@@ -4,10 +4,10 @@ namespace LEDControl.Models
 {
     public class LEDControlData
     {
-        public static bool isEnabled = false;
+        public static bool IsEnabled = false;
 
-        public static Controller strip;
-        public static Settings settings;
+        public static readonly Controller strip;
+        public static readonly Settings settings;
 
         static LEDControlData()
         {
@@ -16,7 +16,7 @@ namespace LEDControl.Models
 
             //Set brightness to maximum (255)
             //Use Unknown as strip type. Then the type will be set in the native assembly.
-            strip = settings.AddController(300, Pin.Gpio18, StripType.WS2812_STRIP, ControllerType.PWM0, 255, false);
+            strip = settings.AddController(300, Pin.Gpio18, StripType.WS2812_STRIP);
         }
     }
 }

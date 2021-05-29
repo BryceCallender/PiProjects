@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace LEDControl.Models
 {
-    public class AbortRequest
+    public class LEDRequest
     {
-        public bool RequestedAbort { get; set; } = false;
+        public Mode Mode { get; set; }
+        public LEDSettings Settings { get; set; }
     }
 }
