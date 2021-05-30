@@ -48,20 +48,24 @@ namespace LEDControl
                 {
                     await Task.Delay(500, stoppingToken);
 
-                    if (_ledState.GetState().Mode == Mode.None) continue;
+                    if (_ledState.GetState().Mode == Mode.None) 
+                        continue;
                     
                     if (LEDState.IsDirty)
-                        _logger.LogInformation("LED change requested! Starting to process ..");
+                        _logger.LogInformation("LED change requested! Starting to process...");
 
                     using var scope = _scopeFactory.CreateScope();
                     
                     var ledEffectService = scope.ServiceProvider.GetRequiredService<ILEDEffects>();
 
                     ledEffectService.HandleRequest();
+                    
+                    //only if the effect is non looping :) might rename later but dont care right now
+                    _ledState.ResetState();
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogCritical("An error occurred when publishing a book. Exception: {@Exception}", ex);
+                    _logger.LogCritical("An error occurred when requesting a led change. Exception: {@Exception}", ex);
                 }
             }
         }

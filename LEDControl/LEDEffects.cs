@@ -28,7 +28,7 @@ namespace LEDControl
         public void HandleRequest()
         {
             //State no longer dirty since we are processing it now
-            LEDState.IsDirty = false;
+            //LEDState.IsDirty = false;
             
             _logger.LogInformation($"State: {_ledState.GetState().Mode}");
 
@@ -39,28 +39,28 @@ namespace LEDControl
                     break;
                 case Mode.ColorWipe: ColorWipe();
                     break;
+                case Mode.StaticColor: StaticColor();
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
         #region Color Effects
+        
         public void ColorWipe()
         {
-            //var color = GetColorAndApplyBrightness();
+            var color = GetColorAndApplyBrightness();
             
-            //using var rpi = new WS281x(LEDControlData.settings);
+            using var rpi = new WS281x(LEDControlData.settings);
 
             for (var i = 0; i < LEDControlData.strip.LEDCount; i++)
             {
                 if (LEDState.IsDirty)
                     return;
                 
-                //LEDControlData.strip.SetLED(i, color);
-                //rpi.Render();
-                Task.Delay(1000);
-                
-                _logger.LogInformation("AAAAAAAAAAAAAAAAAA");
+                LEDControlData.strip.SetLED(i, color);
+                rpi.Render();
             }
         }
 
@@ -130,7 +130,7 @@ namespace LEDControl
         #endregion
         
         #region Private
-
+        
         private Color GetColorAndApplyBrightness()
         {
             return LEDSettings.jsonColor.ApplyBrightnessToColor(BrightnessPercentage);

@@ -4,18 +4,28 @@ namespace LEDControl
 {
     public class LEDState : ILEDState
     {
-        public static LEDRequest state;
+        private LEDRequest _state;
         public static bool IsDirty;
+
+        private static LEDRequest Empty =>  new LEDRequest { Mode = Mode.None}; 
         
         public void SetState(LEDRequest newState)
         {
             IsDirty = true;
-            state = newState;
+            _state = newState;
         }
 
         public LEDRequest GetState()
         {
-            return state ?? new LEDRequest { Mode = Mode.None};
+            return _state ?? Empty;
+        }
+
+        public void ResetState()
+        {
+            if (_state.Settings.Loop == null || (_state.Settings.Loop.HasValue && !_state.Settings.Loop.Value))
+            {
+                _state = Empty;
+            }
         }
     }
 }

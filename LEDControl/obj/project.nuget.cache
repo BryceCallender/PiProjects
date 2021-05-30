@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "lxeA3f651RLX3OqSitBf4CB34I72s1tfAmoeT/ZGZtTtEAaSyeWZVRbj6AbQ2MTYHtn/8XWyc8J03qCA7D7f+Q==",
+  "dgSpecHash": "xMDG/nICgqXQVv23Qy0kb74evOr3vfp82149A6UieuxwAcH3svuA8ltrQ0VG2q6DupTk+L2Fwz/r/yf6SOkxEA==",
   "success": true,
   "projectFilePath": "/Users/brycecallender/Desktop/PiProjects/LEDControl/LEDControl.csproj",
   "expectedPackageFiles": [
@@ -14,6 +14,7 @@
     "/Users/brycecallender/.nuget/packages/microsoft.extensions.dependencyinjection/5.0.1/microsoft.extensions.dependencyinjection.5.0.1.nupkg.sha512",
     "/Users/brycecallender/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/5.0.0/microsoft.extensions.dependencyinjection.abstractions.5.0.0.nupkg.sha512",
     "/usr/local/share/dotnet/sdk/NuGetFallbackFolder/microsoft.netcore.platforms/2.0.0/microsoft.netcore.platforms.2.0.0.nupkg.sha512",
+    "/Users/brycecallender/.nuget/packages/microsoft.openapi/1.2.3/microsoft.openapi.1.2.3.nupkg.sha512",
     "/Users/brycecallender/.nuget/packages/microsoft.win32.registry/4.4.0/microsoft.win32.registry.4.4.0.nupkg.sha512",
     "/Users/brycecallender/.nuget/packages/newtonsoft.json/12.0.3/newtonsoft.json.12.0.3.nupkg.sha512",
     "/Users/brycecallender/.nuget/packages/newtonsoft.json.bson/1.0.2/newtonsoft.json.bson.1.0.2.nupkg.sha512",
@@ -21,6 +22,9 @@
     "/usr/local/share/dotnet/sdk/NuGetFallbackFolder/runtime.win-arm64.runtime.native.system.data.sqlclient.sni/4.4.0/runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "/usr/local/share/dotnet/sdk/NuGetFallbackFolder/runtime.win-x64.runtime.native.system.data.sqlclient.sni/4.4.0/runtime.win-x64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "/usr/local/share/dotnet/sdk/NuGetFallbackFolder/runtime.win-x86.runtime.native.system.data.sqlclient.sni/4.4.0/runtime.win-x86.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
+    "/Users/brycecallender/.nuget/packages/swashbuckle.aspnetcore.swagger/6.1.4/swashbuckle.aspnetcore.swagger.6.1.4.nupkg.sha512",
+    "/Users/brycecallender/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.1.4/swashbuckle.aspnetcore.swaggergen.6.1.4.nupkg.sha512",
+    "/Users/brycecallender/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.1.4/swashbuckle.aspnetcore.swaggerui.6.1.4.nupkg.sha512",
     "/Users/brycecallender/.nuget/packages/system.data.sqlclient/4.4.0/system.data.sqlclient.4.4.0.nupkg.sha512",
     "/Users/brycecallender/.nuget/packages/system.security.accesscontrol/4.4.0/system.security.accesscontrol.4.4.0.nupkg.sha512",
     "/Users/brycecallender/.nuget/packages/system.security.principal.windows/4.4.0/system.security.principal.windows.4.4.0.nupkg.sha512",

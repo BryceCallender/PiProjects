@@ -37,28 +37,37 @@ namespace LEDControl.Controllers
             
             if (!LEDControlData.IsEnabled)
             {
-                _ledState.SetState(new LEDRequest()
-                {
-                    Mode = Mode.Clear
-                });
+                SetState(Mode.Clear);
             }
             
             return Ok();
         }
 
+        /// <summary>
+        /// Sets the led strip color pixel by pixel by a certain wait time
+        /// </summary>
+        /// <param name="ledSettings"></param>
         [HttpPost("color_wipe")]
-        public void ColorWipe()
+        public void ColorWipe(LEDSettings ledSettings)
         {
-            _ledState.SetState(new LEDRequest()
-            {
-                Mode = Mode.ColorWipe,
-                Settings = new LEDSettings()
-                {
-                    
-                }
-            });
+            SetState(Mode.ColorWipe, ledSettings);
+        }
+        
+        /// <summary>
+        /// Sets the strip a single color immediately
+        /// </summary>
+        /// <param name="ledSettings"></param>
+        [HttpPost("static_color")]
+        public void StaticColor(LEDSettings ledSettings)
+        {
+            SetState(Mode.StaticColor, ledSettings);
         }
 
+        /// <summary>
+        /// Runs the server to listen to the music visualizer client
+        /// </summary>
+        /// <param name="status"></param>
+        /// <returns></returns>
         [HttpPost("audio_reactive")]
         public IActionResult AudioReactiveLighting([FromBody] AudioStatus status)
         {
@@ -88,6 +97,17 @@ namespace LEDControl.Controllers
             }
 
             return Ok();
+        }
+
+        private void SetState(Mode mode, LEDSettings ledSettings = null)
+        {
+            LEDState.IsDirty = true;
+            
+            _ledState.SetState(new LEDRequest
+            {
+                Mode = mode,
+                Settings = ledSettings
+            });
         }
     }
 }

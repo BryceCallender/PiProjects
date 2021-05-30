@@ -4,6 +4,7 @@ namespace LEDControl.Models
     {
         None,
         Clear,
-        ColorWipe
+        ColorWipe,
+        StaticColor,
     }
 }

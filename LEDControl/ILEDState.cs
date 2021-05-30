@@ -6,5 +6,6 @@ namespace LEDControl
     {
         public void SetState(LEDRequest newState);
         public LEDRequest GetState();
+        public void ResetState();
     }
 }
