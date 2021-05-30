@@ -48,7 +48,7 @@ namespace LEDControl.Controllers
         /// </summary>
         /// <param name="ledSettings"></param>
         [HttpPost("color_wipe")]
-        public void ColorWipe(LEDSettings ledSettings)
+        public void ColorWipe([FromBody] LEDSettings ledSettings)
         {
             SetState(Mode.ColorWipe, ledSettings);
         }
@@ -58,7 +58,7 @@ namespace LEDControl.Controllers
         /// </summary>
         /// <param name="ledSettings"></param>
         [HttpPost("static_color")]
-        public void StaticColor(LEDSettings ledSettings)
+        public void StaticColor([FromBody] LEDSettings ledSettings)
         {
             SetState(Mode.StaticColor, ledSettings);
         }
