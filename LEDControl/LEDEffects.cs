@@ -1,8 +1,6 @@
 using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
-using System.Threading.Tasks;
 using LEDControl.Models;
 using Microsoft.Extensions.Logging;
 using rpi_ws281x;
@@ -61,6 +59,11 @@ namespace LEDControl
                 
                 LEDControlData.strip.SetLED(i, color);
                 rpi.Render();
+                
+                if(LEDSettings?.WaitTime > 0) 
+                {
+                    Thread.Sleep(LEDSettings?.WaitTime ?? 0);
+                }
             }
         }
 

@@ -101,8 +101,6 @@ namespace LEDControl.Controllers
 
         private void SetState(Mode mode, LEDSettings ledSettings = null)
         {
-            LEDState.IsDirty = true;
-            
             _ledState.SetState(new LEDRequest
             {
                 Mode = mode,

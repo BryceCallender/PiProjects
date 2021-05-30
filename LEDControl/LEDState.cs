@@ -22,7 +22,7 @@ namespace LEDControl
 
         public void ResetState()
         {
-            if (_state.Settings.Loop == null || (_state.Settings.Loop.HasValue && !_state.Settings.Loop.Value))
+            if (_state.Settings.Loop == null || (!_state.Settings?.Loop ?? false))
             {
                 _state = Empty;
             }
