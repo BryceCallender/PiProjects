@@ -30,7 +30,7 @@ namespace LEDControl
                     }
                     
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls($"{localIP}:5000");
+                    webBuilder.UseUrls($"http://{localIP}:5000", "http://localhost:5001");
                 });
     }
 }
