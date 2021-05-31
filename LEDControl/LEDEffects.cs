@@ -116,20 +116,23 @@ namespace LEDControl
         public void RainbowCycle()
         {
             using var rpi = new WS281x(LEDControlData.settings);
-            
-            for (var j = 0; j < 256; j++)
-            {
-                for (var i = 0; i < LEDControlData.strip.LEDCount; i++)
-                {
-                    if (LEDState.IsDirty)
-                        return;
-                    
-                    var color = Wheel((i * 256 / LEDControlData.strip.LEDCount + j) & 255);
-                    LEDControlData.strip.SetLED(i, color);
-                }
 
-                rpi.Render();
-                Thread.Sleep(LEDSettings?.WaitTime ?? _defaultWaitTime);
+            while (LEDSettings?.Loop ?? false)
+            {
+                for (var j = 0; j < 256; j++)
+                {
+                    for (var i = 0; i < LEDControlData.strip.LEDCount; i++)
+                    {
+                        if (LEDState.IsDirty)
+                            return;
+
+                        var color = Wheel((i * 256 / LEDControlData.strip.LEDCount + j) & 255);
+                        LEDControlData.strip.SetLED(i, color);
+                    }
+
+                    rpi.Render();
+                    Thread.Sleep(LEDSettings?.WaitTime ?? _defaultWaitTime);
+                }
             }
         }
 
@@ -139,8 +142,8 @@ namespace LEDControl
             
             using var rpi = new WS281x(LEDControlData.settings);
             
-            // for (var j = 0; j < iterations; j++)
-            // {
+            while(LEDSettings?.Loop ?? false)
+            {
                 for (var q = 0; q < 3; q++)
                 {
                     for (var i = 0; i < LEDControlData.strip.LEDCount; i += 3)
@@ -162,15 +165,15 @@ namespace LEDControl
                         LEDControlData.strip.SetLED(i + q, Color.Black);
                     }
                 }
-            // }
+            }
         }
 
         public void TheaterChaseRainbow()
         {
             using var rpi = new WS281x(LEDControlData.settings);
             
-            // for (int j = 0; j < iterations; j++)
-            // {
+            while(LEDSettings?.Loop ?? false)
+            {
                 for (var q = 0; q < 3; q++)
                 {
                     for (var i = 0; i < LEDControlData.strip.LEDCount; i += 3)
@@ -191,8 +194,8 @@ namespace LEDControl
                         
                         LEDControlData.strip.SetLED(i + q, Color.Black);
                     }
-                }
-            // }
+                } 
+            }
         }
 
         public void AppearFromBack()
