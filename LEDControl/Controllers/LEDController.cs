@@ -62,6 +62,12 @@ namespace LEDControl.Controllers
         {
             SetState(Mode.StaticColor, ledSettings);
         }
+        
+        [HttpPost("rainbow")]
+        public void Rainbow([FromBody] LEDSettings ledSettings)
+        {
+            SetState(Mode.Rainbow, ledSettings);
+        }
 
         /// <summary>
         /// Runs the server to listen to the music visualizer client

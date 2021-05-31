@@ -5,6 +5,7 @@ namespace LEDControl
     public class LEDState : ILEDState
     {
         private LEDRequest _state;
+
         public static bool IsDirty;
 
         private static LEDRequest Empty =>  new LEDRequest { Mode = Mode.None}; 
@@ -22,10 +23,13 @@ namespace LEDControl
 
         public void ResetState()
         {
-            if (_state.Settings.Loop == null || (!_state.Settings?.Loop ?? false))
+            //If we want to loop don't reset
+            if (_state.Settings.Loop ?? false)
             {
-                _state = Empty;
+                return;
             }
+
+            _state = Empty;
         }
     }
 }

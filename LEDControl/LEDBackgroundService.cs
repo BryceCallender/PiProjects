@@ -60,7 +60,6 @@ namespace LEDControl
 
                     ledEffectService.HandleRequest();
                     
-                    //only if the effect is non looping :) might rename later but dont care right now
                     _ledState.ResetState();
                 }
                 catch (Exception ex)

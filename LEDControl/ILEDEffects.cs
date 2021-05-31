@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using LEDControl.Models;
 
@@ -20,7 +21,7 @@ namespace LEDControl
         
         public void SelectedColors();
         public void Chaser();
-        
-        public void Clear();
+
+        public void Clear(int delay = 0);
     }
 }

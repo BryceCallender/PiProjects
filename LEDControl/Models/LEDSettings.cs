@@ -1,8 +1,12 @@
+using System.Collections.Generic;
+
 namespace LEDControl.Models
 {
     public class LEDSettings
     {
         public JsonColor jsonColor { get; set; }
+        
+        public IEnumerable<int>? colors { get; set; }
 
         public int? WaitTime { get; set; }
         public bool? Loop { get; set; }
