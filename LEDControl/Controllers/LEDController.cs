@@ -42,21 +42,13 @@ namespace LEDControl.Controllers
             
             return Ok();
         }
-
-        /// <summary>
-        /// Sets the led strip color pixel by pixel by a certain wait time
-        /// </summary>
-        /// <param name="ledSettings"></param>
+        
         [HttpPost("color_wipe")]
         public void ColorWipe([FromBody] LEDSettings ledSettings)
         {
             SetState(Mode.ColorWipe, ledSettings);
         }
         
-        /// <summary>
-        /// Sets the strip a single color immediately
-        /// </summary>
-        /// <param name="ledSettings"></param>
         [HttpPost("static_color")]
         public void StaticColor([FromBody] LEDSettings ledSettings)
         {
@@ -69,11 +61,54 @@ namespace LEDControl.Controllers
             SetState(Mode.Rainbow, ledSettings);
         }
 
-        /// <summary>
-        /// Runs the server to listen to the music visualizer client
-        /// </summary>
-        /// <param name="status"></param>
-        /// <returns></returns>
+        [HttpPost("rainbow_cycle")]
+        public void RainbowCycle([FromBody] LEDSettings ledSettings)
+        {
+            SetState(Mode.RainbowCycle, ledSettings);
+        }
+
+        [HttpPost("theater_chase")]
+        public void TheaterChase([FromBody] LEDSettings ledSettings)
+        {
+            SetState(Mode.TheatreChase, ledSettings);
+        }
+
+        [HttpPost("theater_chase_rainbow")]
+        public void TheaterChaseRainbow([FromBody] LEDSettings ledSettings)
+        {
+            SetState(Mode.TheatreChaseRainbow, ledSettings);
+        }
+
+        [HttpPost("appear_from_back")]
+        public void AppearFromBack([FromBody] LEDSettings ledSettings)
+        {
+            SetState(Mode.AppearFromBack, ledSettings);
+        }
+
+        [HttpPost("hyperspace")]
+        public async Task Hyperspace([FromBody] LEDSettings ledSettings)
+        {
+            SetState(Mode.Hyperspace, ledSettings);
+        }
+
+        [HttpPost("breathing")]
+        public void Breathe([FromBody] LEDSettings ledSettings)
+        {
+            SetState(Mode.Breathing, ledSettings);
+        }
+
+        [HttpPost("breathing_rainbow")]
+        public void BreathingRainbow([FromBody] LEDSettings ledSettings)
+        {
+            SetState(Mode.BreathingRainbow, ledSettings);
+        }
+
+        [HttpPost("chaser")]
+        public void Chaser([FromBody] LEDSettings ledSettings)
+        {
+            SetState(Mode.Chaser, ledSettings);
+        }
+
         [HttpPost("audio_reactive")]
         public IActionResult AudioReactiveLighting([FromBody] AudioStatus status)
         {
@@ -105,7 +140,7 @@ namespace LEDControl.Controllers
             return Ok();
         }
 
-        private void SetState(Mode mode, LEDSettings ledSettings = null)
+        private void SetState(Mode mode, LEDSettings? ledSettings = null)
         {
             _ledState.SetState(new LEDRequest
             {

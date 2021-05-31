@@ -17,7 +17,7 @@ namespace LEDControl
         private static double BrightnessPercentage => LEDControlData.strip.Brightness / 255.0;
         
         private Mode StateMode => _ledState.GetState().Mode;
-        private LEDSettings LEDSettings => _ledState.GetState().Settings;
+        private LEDSettings? LEDSettings => _ledState.GetState().Settings;
 
         private readonly int _defaultWaitTime;
 
@@ -35,6 +35,8 @@ namespace LEDControl
             
             _logger.LogInformation($"State: {_ledState.GetState().Mode}");
 
+            Clear();
+            
             switch (StateMode)
             {
                 case Mode.None: break;
@@ -43,6 +45,26 @@ namespace LEDControl
                 case Mode.ColorWipe: ColorWipe();
                     break;
                 case Mode.StaticColor: StaticColor();
+                    break;
+                case Mode.Rainbow: Rainbow();
+                    break;
+                case Mode.RainbowCycle: RainbowCycle();
+                    break;
+                case Mode.TheatreChase: TheaterChase();
+                    break;
+                case Mode.TheatreChaseRainbow: TheaterChaseRainbow();
+                    break;
+                case Mode.AppearFromBack: AppearFromBack();
+                    break;
+                case Mode.Hyperspace: Hyperspace();
+                    break;
+                case Mode.Breathing: Breathe();
+                    break;
+                case Mode.BreathingRainbow: BreathingRainbow();
+                    break;
+                case Mode.SelectedColors: SelectedColors();
+                    break; 
+                case Mode.Chaser: Chaser();
                     break;
             }
         }
@@ -63,7 +85,7 @@ namespace LEDControl
                 LEDControlData.strip.SetLED(i, color);
                 rpi.Render();
                 
-                Thread.Sleep(LEDSettings.WaitTime ?? _defaultWaitTime);
+                Thread.Sleep(LEDSettings?.WaitTime ?? _defaultWaitTime);
             }
         }
 
@@ -81,6 +103,9 @@ namespace LEDControl
             
             for (var i = 0; i < LEDControlData.strip.LEDCount; i++)
             {
+                if (LEDState.IsDirty)
+                    return;
+                
                 var color = Wheel(i & 255);
                 LEDControlData.strip.SetLED(i, color);
             }
@@ -104,7 +129,7 @@ namespace LEDControl
                 }
 
                 rpi.Render();
-                Thread.Sleep(LEDSettings.WaitTime ?? _defaultWaitTime);
+                Thread.Sleep(LEDSettings?.WaitTime ?? _defaultWaitTime);
             }
         }
 
@@ -120,14 +145,20 @@ namespace LEDControl
                 {
                     for (var i = 0; i < LEDControlData.strip.LEDCount; i += 3)
                     {
+                        if (LEDState.IsDirty)
+                            return;
+                        
                         LEDControlData.strip.SetLED(i + q, color);
                     }
 
                     rpi.Render();
-                    Thread.Sleep(LEDSettings.WaitTime ?? _defaultWaitTime);
+                    Thread.Sleep(LEDSettings?.WaitTime ?? _defaultWaitTime);
 
                     for(var i = 0; i < LEDControlData.strip.LEDCount; i += 3)
                     {
+                        if (LEDState.IsDirty)
+                            return;
+                        
                         LEDControlData.strip.SetLED(i + q, Color.Black);
                     }
                 }
@@ -136,12 +167,48 @@ namespace LEDControl
 
         public void TheaterChaseRainbow()
         {
-            throw new NotImplementedException();
+            using var rpi = new WS281x(LEDControlData.settings);
+            
+            // for (int j = 0; j < iterations; j++)
+            // {
+                for (var q = 0; q < 3; q++)
+                {
+                    for (var i = 0; i < LEDControlData.strip.LEDCount; i += 3)
+                    {
+                        if (LEDState.IsDirty)
+                            return;
+                        
+                        LEDControlData.strip.SetLED(i + q, Wheel((i) % 255));
+                    }
+
+                    rpi.Render();
+                    Thread.Sleep(LEDSettings?.WaitTime ?? _defaultWaitTime);
+
+                    for (var i = 0; i < LEDControlData.strip.LEDCount; i += 3)
+                    {
+                        if (LEDState.IsDirty)
+                            return;
+                        
+                        LEDControlData.strip.SetLED(i + q, Color.Black);
+                    }
+                }
+            // }
         }
 
         public void AppearFromBack()
         {
-            throw new NotImplementedException();
+            var color = GetColorAndApplyBrightness();
+            
+            using var rpi = new WS281x(LEDControlData.settings);
+
+            for (var i = LEDControlData.strip.LEDCount - 1; i >= 0; i--)
+            {
+                if (LEDState.IsDirty)
+                    return;
+                
+                LEDControlData.strip.SetLED(i, color);
+                rpi.Render();
+            }
         }
 
         public void Hyperspace()
@@ -163,16 +230,15 @@ namespace LEDControl
         {
             using var rpi = new WS281x(LEDControlData.settings);
             
-            int ledIndex = 0;
+            var ledIndex = 0;
 
-            foreach (var key in LEDSettings.colors ?? new List<int>())
+            foreach (var key in LEDSettings?.Colors ?? new List<int>())
             {
                 var color = Color.FromArgb(key);
-                //var finalColor = Color.FromArgb();
-                //color = GetColorAndApplyBrightness();
+                color = color.ApplyBrightnessToColor(BrightnessPercentage);
 
-                //LEDControlData.strip.SetLED(ledIndex, color);
-                //ledIndex++;
+                LEDControlData.strip.SetLED(ledIndex, color);
+                ledIndex++;
             }
 
             rpi.Render();
@@ -215,7 +281,7 @@ namespace LEDControl
         
         private Color GetColorAndApplyBrightness()
         {
-            return LEDSettings.jsonColor.ApplyBrightnessToColor(BrightnessPercentage);
+            return LEDSettings?.jsonColor.ApplyBrightnessToColor(BrightnessPercentage) ?? Color.Black;
         }
         
         private static Color Wheel(int pos)

@@ -6,6 +6,15 @@ namespace LEDControl.Models
         Clear,
         ColorWipe,
         StaticColor,
-        Rainbow
+        Rainbow,
+        RainbowCycle,
+        TheatreChase,
+        TheatreChaseRainbow,
+        AppearFromBack,
+        Hyperspace,
+        Breathing,
+        BreathingRainbow,
+        SelectedColors,
+        Chaser
     }
 }
