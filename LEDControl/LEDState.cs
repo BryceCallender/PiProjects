@@ -24,7 +24,7 @@ namespace LEDControl
         public void ResetState()
         {
             //If we want to loop don't reset
-            if (_state.Settings.Loop ?? false)
+            if (_state.Settings?.Loop ?? false)
             {
                 return;
             }
