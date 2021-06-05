@@ -109,6 +109,12 @@ namespace LEDControl.Controllers
             SetState(Mode.Chaser, ledSettings);
         }
 
+        [HttpPost("selective_colors")]
+        public void SelectedColors([FromBody] LEDSettings ledSettings)
+        {
+            SetState(Mode.SelectedColors, ledSettings);
+        }
+
         [HttpPost("audio_reactive")]
         public IActionResult AudioReactiveLighting([FromBody] AudioStatus status)
         {

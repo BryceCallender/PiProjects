@@ -305,7 +305,7 @@ namespace LEDControl
 
             Clear(rpi, delay);
         }
-
+        
         private static void Clear(WS281x rpi, int delay = 0)
         {
             if (delay < 0)

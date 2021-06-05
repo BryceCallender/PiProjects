@@ -24,9 +24,6 @@ namespace LEDControl
 
         public void ResetState()
         {
-            if ((IsDirty || !IsSingleUseState()) && !(!_state.Settings?.Loop ?? true)) 
-                return;
-            
             _state = Empty;
             IsDirty = false;
         }
