@@ -60,6 +60,8 @@ namespace LEDControl
 
                     ledEffectService.HandleRequest();
                     
+                    //Reset the state if the effect is a single use effect or non loopable 
+                    //and the state has not changed
                     _ledState.ResetState();
                 }
                 catch (Exception ex)

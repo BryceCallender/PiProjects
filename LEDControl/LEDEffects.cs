@@ -90,16 +90,19 @@ namespace LEDControl
 
             using var rpi = new WS281x(LEDControlData.settings);
 
-            for (var i = 0; i < LEDControlData.strip.LEDCount; i++)
+            do
             {
-                if (LEDState.IsDirty)
-                    return;
+                for (var i = 0; i < LEDControlData.strip.LEDCount; i++)
+                {
+                    if (LEDState.IsDirty)
+                        return;
 
-                LEDControlData.strip.SetLED(i, color);
-                rpi.Render();
+                    LEDControlData.strip.SetLED(i, color);
+                    rpi.Render();
 
-                Thread.Sleep(LEDSettings?.WaitTime ?? _defaultWaitTime);
-            }
+                    Thread.Sleep(LEDSettings?.WaitTime ?? _defaultWaitTime);
+                }
+            } while (LEDSettings?.Loop ?? false);
         }
 
         public void StaticColor()
@@ -130,7 +133,7 @@ namespace LEDControl
         {
             using var rpi = new WS281x(LEDControlData.settings);
 
-            while (true)
+            do
             {
                 for (var j = 0; j < 256; j++)
                 {
@@ -146,7 +149,7 @@ namespace LEDControl
                     rpi.Render();
                     Thread.Sleep(LEDSettings?.WaitTime ?? _defaultWaitTime);
                 }
-            }
+            } while (LEDSettings?.Loop ?? false);
         }
 
         public void TheaterChase()
@@ -155,7 +158,7 @@ namespace LEDControl
 
             using var rpi = new WS281x(LEDControlData.settings);
 
-            while (true)
+            do
             {
                 for (var q = 0; q < 3; q++)
                 {
@@ -178,14 +181,14 @@ namespace LEDControl
                         LEDControlData.strip.SetLED(i + q, Color.Black);
                     }
                 }
-            }
+            } while (LEDSettings?.Loop ?? false);
         }
 
         public void TheaterChaseRainbow()
         {
             using var rpi = new WS281x(LEDControlData.settings);
 
-            while (true)
+            do
             {
                 for (var q = 0; q < 3; q++)
                 {
@@ -208,7 +211,7 @@ namespace LEDControl
                         LEDControlData.strip.SetLED(i + q, Color.Black);
                     }
                 }
-            }
+            } while (LEDSettings?.Loop ?? false);
         }
 
         public void AppearFromBack()
@@ -217,14 +220,17 @@ namespace LEDControl
 
             using var rpi = new WS281x(LEDControlData.settings);
 
-            for (var i = LEDControlData.strip.LEDCount - 1; i >= 0; i--)
+            do
             {
-                if (LEDState.IsDirty)
-                    return;
+                for (var i = LEDControlData.strip.LEDCount - 1; i >= 0; i--)
+                {
+                    if (LEDState.IsDirty)
+                        return;
 
-                LEDControlData.strip.SetLED(i, color);
-                rpi.Render();
-            }
+                    LEDControlData.strip.SetLED(i, color);
+                    rpi.Render();
+                }
+            } while (LEDSettings?.Loop ?? false);
         }
 
         public void Hyperspace()
@@ -234,7 +240,10 @@ namespace LEDControl
 
         public void Breathe()
         {
-            Breathe(GetColor());
+            while (true)
+            {
+                Breathe(GetColor());
+            }
         }
 
         public void BreathingRainbow()
@@ -250,9 +259,12 @@ namespace LEDControl
                 Color.Pink
             };
 
-            foreach(var color in colors)
+            while (true)
             {
-                Breathe(color);
+                foreach(var color in colors)
+                {
+                    Breathe(color);
+                }
             }
         }
 
@@ -328,9 +340,9 @@ namespace LEDControl
                 if (LEDState.IsDirty)
                     return;
 
-                color = color.ApplyBrightnessToColor(Gaussian(i) / 255.0);
+                var newColor = color.ApplyBrightnessToColor(Gaussian(i) / 255.0);
                 
-                LEDControlData.strip.SetAll(color);
+                LEDControlData.strip.SetAll(newColor);
                 rpi.Render();
                 
                 Thread.Sleep(LEDSettings?.WaitTime ?? _defaultWaitTime);

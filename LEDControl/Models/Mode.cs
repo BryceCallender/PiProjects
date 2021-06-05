@@ -15,6 +15,7 @@ namespace LEDControl.Models
         Breathing,
         BreathingRainbow,
         SelectedColors,
-        Chaser
+        Chaser,
+        Stars
     }
 }
