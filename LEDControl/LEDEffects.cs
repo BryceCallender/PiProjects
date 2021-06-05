@@ -92,6 +92,8 @@ namespace LEDControl
 
             do
             {
+                Clear(rpi);
+                
                 for (var i = 0; i < LEDControlData.strip.LEDCount; i++)
                 {
                     if (LEDState.IsDirty)
@@ -240,10 +242,13 @@ namespace LEDControl
 
         public void Breathe()
         {
-            while (true)
+            do
             {
+                if (LEDState.IsDirty)
+                    return;
+                
                 Breathe(GetColor());
-            }
+            } while (LEDSettings?.Loop ?? false);
         }
 
         public void BreathingRainbow()
@@ -253,19 +258,22 @@ namespace LEDControl
                 Color.Red,
                 Color.Orange,
                 Color.Yellow,
-                Color.Green,
+                Color.GreenYellow,
                 Color.Blue,
-                Color.Purple,
+                Color.MediumPurple,
                 Color.Pink
             };
 
-            while (true)
+            do
             {
-                foreach(var color in colors)
+                foreach (var color in colors)
                 {
+                    if (LEDState.IsDirty)
+                        return;
+
                     Breathe(color);
                 }
-            }
+            } while (LEDSettings?.Loop ?? false);
         }
 
         public void SelectedColors()
@@ -295,6 +303,11 @@ namespace LEDControl
         {
             using var rpi = new WS281x(LEDControlData.settings);
 
+            Clear(rpi, delay);
+        }
+
+        private static void Clear(WS281x rpi, int delay = 0)
+        {
             if (delay < 0)
                 delay = 0;
 
