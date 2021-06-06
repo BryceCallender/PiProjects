@@ -6,8 +6,6 @@ using System.Drawing;
 using System.Diagnostics;
 using System.Threading;
 using System.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Logging;
 
 namespace LEDControl.Controllers
@@ -17,7 +15,7 @@ namespace LEDControl.Controllers
     {
         private readonly ILogger _logger;
 
-        private static Process _visualizerProcess;
+        private static Process? _visualizerProcess;
         
         private readonly ILEDState _ledState;
 
@@ -86,7 +84,7 @@ namespace LEDControl.Controllers
         }
 
         [HttpPost("hyperspace")]
-        public async Task Hyperspace([FromBody] LEDSettings ledSettings)
+        public void Hyperspace([FromBody] LEDSettings ledSettings)
         {
             SetState(Mode.Hyperspace, ledSettings);
         }
@@ -138,8 +136,8 @@ namespace LEDControl.Controllers
             }
             else
             {
-                _visualizerProcess.Kill();
-                _visualizerProcess.Dispose();
+                _visualizerProcess?.Kill();
+                _visualizerProcess?.Dispose();
                 _visualizerProcess = null;
             }
 

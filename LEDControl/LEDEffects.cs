@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using LEDControl.Models;
 using Microsoft.Extensions.Configuration;
@@ -35,7 +36,7 @@ namespace LEDControl
 
             _logger.LogInformation($"State: {_ledState.GetState().Mode}");
 
-            Clear();
+            //Clear();
 
             switch (StateMode)
             {
@@ -282,9 +283,9 @@ namespace LEDControl
 
             var ledIndex = 0;
 
-            foreach (var key in LEDSettings?.Colors ?? new List<int>())
+            foreach (var key in LEDSettings?.Colors ?? new List<long>())
             {
-                var color = Color.FromArgb(key);
+                var color = Color.FromArgb((int)key);
                 color = color.ApplyBrightnessToColor(BrightnessPercentage);
 
                 LEDControlData.strip.SetLED(ledIndex, color);
@@ -336,12 +337,12 @@ namespace LEDControl
 
         private Color GetColor()
         {
-            return LEDSettings?.jsonColor.ToColor() ?? Color.Black;
+            return LEDSettings?.JsonColor?.ToColor() ?? Color.Black;
         }
 
         private Color GetColorAndApplyBrightness()
         {
-            return LEDSettings?.jsonColor.ApplyBrightnessToColor(BrightnessPercentage) ?? Color.Black;
+            return LEDSettings?.JsonColor?.ApplyBrightnessToColor(BrightnessPercentage) ?? Color.Black;
         }
 
         private void Breathe(Color color)

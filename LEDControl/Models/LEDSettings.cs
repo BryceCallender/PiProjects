@@ -4,9 +4,9 @@ namespace LEDControl.Models
 {
     public class LEDSettings
     {
-        public JsonColor jsonColor { get; set; }
+        public JsonColor? JsonColor { get; set; }
         
-        public IEnumerable<int>? Colors { get; set; }
+        public IEnumerable<long>? Colors { get; set; }
 
         public int? WaitTime { get; set; }
         public bool? Loop { get; set; }
