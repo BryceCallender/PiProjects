@@ -1,38 +1,32 @@
-using System.Collections.Generic;
 using LEDControl.Models;
 
-namespace LEDControl
+namespace LEDControl;
+
+public class LEDState : ILEDState
 {
-    public class LEDState : ILEDState
+    private LEDRequest _state = Empty;
+
+    public static bool IsDirty;
+
+    private static LEDRequest Empty => new LEDRequest { Mode = Mode.None}; 
+    
+    public void SetState(LEDRequest newState)
     {
-        private LEDRequest _state = Empty;
+        IsDirty = true;
+        _state = newState;
+    }
 
-        public static bool IsDirty;
+    public LEDRequest GetState()
+    {
+        return _state;
+    }
 
-        private static LEDRequest Empty => new LEDRequest { Mode = Mode.None}; 
+    public void ResetState()
+    {
+        if (IsDirty) 
+            return;
         
-        public void SetState(LEDRequest newState)
-        {
-            IsDirty = true;
-            _state = newState;
-        }
-
-        public LEDRequest GetState()
-        {
-            return _state;
-        }
-
-        public void ResetState()
-        {
-            _state = Empty;
-            IsDirty = false;
-        }
-
-        private bool IsSingleUseState()
-        {
-            var singleStates = new List<Mode> { Mode.StaticColor, Mode.Rainbow, Mode.StaticColor };
-            
-            return singleStates.Contains(_state.Mode);
-        }
+        _state = Empty;
+        IsDirty = false;
     }
 }

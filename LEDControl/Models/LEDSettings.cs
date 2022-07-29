@@ -1,18 +1,17 @@
-using System.Collections.Generic;
+using System.Drawing;
 
-namespace LEDControl.Models
+namespace LEDControl.Models;
+
+public class LEDSettings
 {
-    public class LEDSettings
-    {
-        public JsonColor? JsonColor { get; set; }
-        
-        public IEnumerable<long>? Colors { get; set; }
+    public Color? Color { get; set; }
 
-        public int? WaitTime { get; set; }
-        public bool? Loop { get; set; }
-        public int? Iterations { get; set; }
-        public int? Length { get; set; }
-        public int? Duration { get; set; }
-        public int? Trail { get; set; }
-    }
+    public IEnumerable<Color>? Colors { get; set; }
+
+    public int? WaitTime { get; set; }
+    public bool? Loop { get; set; }
+    public int? Iterations { get; set; }
+    public int? Length { get; set; }
+    public int? Duration { get; set; }
+    public int? Trail { get; set; }
 }
