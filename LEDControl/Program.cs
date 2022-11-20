@@ -1,39 +1,39 @@
 using System.Net;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using System.Net.Sockets;
+using FastEndpoints;
+using FastEndpoints.Swagger;
+using LEDControl;
 
-namespace LEDControl
+var builder = WebApplication.CreateBuilder(args);
+
+// ConfigureServices
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+builder.Services.AddHostedService<LEDBackgroundService>();
+builder.Services.AddSingleton<ILEDState, LEDState>();
+builder.Services.AddScoped<ILEDEffects, LEDEffects>();
+
+builder.Services.AddFastEndpoints();
+builder.Services.AddSwaggerDoc();
+
+var app = builder.Build();
+
+// Configure
+var localIP = LocalIPAddress();
+app.Urls.Add("https://localhost:5001");
+app.Urls.Add($"https://{localIP}:5001");
+
+app.UseAuthorization();
+app.UseFastEndpoints();
+app.UseOpenApi();
+app.UseSwaggerUi3(c => c.ConfigureDefaults());
+app.Run();
+
+string LocalIPAddress()
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
-
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureLogging((hostingContext, logging) =>
-                {
-                    logging.AddConsole();
-                })
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    //IPHostEntry heserver = Dns.GetHostEntry(Dns.GetHostName());
-                    //string networkAddress = "*";
-
-                    //foreach(IPAddress address in heserver.AddressList)
-                    //{
-                    //    if(address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                    //    {
-                    //        networkAddress = address.ToString();
-                    //        break;
-                    //    }
-                    //}
-
-                    webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls($"http://192.168.1.235:5000");
-                });
-    }
+    using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0);
+    
+    socket.Connect("8.8.8.8", 65530);
+    var endPoint = socket.LocalEndPoint as IPEndPoint;
+    
+    return endPoint?.Address.ToString() ?? "127.0.0.1";
 }
