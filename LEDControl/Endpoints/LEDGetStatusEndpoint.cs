@@ -10,7 +10,7 @@ public class LEDGetStatusEndpoint : EndpointWithoutRequest<LEDStatus>
     public override async Task HandleAsync(CancellationToken cancellationToken)
     {
         await SendAsync(
-            new LEDStatus { IsEnabled = LEDControlData.IsEnabled}, 
+            new LEDStatus { IsEnabled = LEDStrip.IsEnabled}, 
             cancellation: cancellationToken);
     }
 }

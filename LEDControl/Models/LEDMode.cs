@@ -1,6 +1,6 @@
 namespace LEDControl.Models
 {
-    public enum Mode
+    public enum LEDMode
     {
         None,
         Clear,

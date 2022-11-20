@@ -1,7 +1,6 @@
 using FastEndpoints;
 using LEDControl.Models;
 using Microsoft.AspNetCore.Authorization;
-using Mode = LEDControl.Models.Mode;
 
 namespace LEDControl.Endpoints;
 
@@ -17,13 +16,13 @@ public class LEDSetStatusEndpoint : Endpoint<LEDStatus>
     
     public override Task HandleAsync(LEDStatus status, CancellationToken ct)
     {
-        LEDControlData.IsEnabled = status.IsEnabled;
+        LEDStrip.IsEnabled = status.IsEnabled;
 
         if (!status.IsEnabled)
         {
             _ledState.SetState(new LEDRequest
             {
-                Mode = Mode.Clear
+                Mode = LEDMode.Clear
             });
         }
         

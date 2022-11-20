@@ -2,6 +2,6 @@
 
 public class LEDRequest
 {
-    public Mode Mode { get; set; }
+    public LEDMode Mode { get; set; }
     public LEDSettings? Settings { get; set; }
 }

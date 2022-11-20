@@ -42,7 +42,7 @@ public class LEDBackgroundService : BackgroundService
             {
                 await Task.Delay(500, stoppingToken);
 
-                if (_ledState.GetState().Mode == Mode.None) 
+                if (_ledState.State.Mode == LEDMode.None) 
                     continue;
                 
                 if (LEDState.IsDirty)
@@ -60,7 +60,7 @@ public class LEDBackgroundService : BackgroundService
             }
             catch (Exception ex)
             {
-                _logger.LogCritical("An error occurred when requesting a led change. Exception: {@Exception}", ex);
+                _logger.LogCritical("An error occurred when requesting a led change. Exception: {Exception}", ex);
             }
         }
     }

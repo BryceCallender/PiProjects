@@ -4,7 +4,8 @@ namespace LEDControl;
 
 public interface ILEDState
 {
+    public LEDRequest State { get; set; }
+    
     public void SetState(LEDRequest newState);
-    public LEDRequest GetState();
     public void ResetState();
 }

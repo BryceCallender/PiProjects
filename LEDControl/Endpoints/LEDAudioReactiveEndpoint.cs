@@ -12,7 +12,7 @@ public class LEDAudioReactiveEndpoint : Endpoint<AudioStatus, LEDResponse>
     
     public override Task HandleAsync(AudioStatus audioStatus, CancellationToken ct)
     {
-        LEDControlData.IsEnabled = true;
+        LEDStrip.IsEnabled = true;
 
          if (audioStatus.Enabled)
          {

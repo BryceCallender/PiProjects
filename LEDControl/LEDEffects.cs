@@ -9,10 +9,10 @@ public class LEDEffects : ILEDEffects
     private readonly ILEDState _ledState;
     private readonly ILogger<LEDEffects> _logger;
 
-    private static double BrightnessPercentage => LEDControlData.strip.Brightness / 255.0;
+    private static double BrightnessPercentage => LEDStrip.Brightness / 255.0;
 
-    private Mode StateMode => _ledState.GetState().Mode;
-    private LEDSettings? LEDSettings => _ledState.GetState().Settings;
+    private LEDMode StateMode => _ledState.State.Mode;
+    private LEDSettings? Settings => _ledState.State.Settings;
 
     private readonly int _defaultWaitTime;
 
@@ -28,50 +28,50 @@ public class LEDEffects : ILEDEffects
     {
         LEDState.IsDirty = false;
 
-        _logger.LogInformation("State: {Mode}", _ledState.GetState().Mode);
+        _logger.LogInformation("State: {Mode}", StateMode);
 
         Clear();
 
         switch (StateMode)
         {
-            case Mode.None: break;
-            case Mode.Clear:
+            case LEDMode.None: break;
+            case LEDMode.Clear:
                 Clear();
                 break;
-            case Mode.ColorWipe:
+            case LEDMode.ColorWipe:
                 ColorWipe();
                 break;
-            case Mode.StaticColor:
+            case LEDMode.StaticColor:
                 StaticColor();
                 break;
-            case Mode.Rainbow:
+            case LEDMode.Rainbow:
                 Rainbow();
                 break;
-            case Mode.RainbowCycle:
+            case LEDMode.RainbowCycle:
                 RainbowCycle();
                 break;
-            case Mode.TheatreChase:
+            case LEDMode.TheatreChase:
                 TheaterChase();
                 break;
-            case Mode.TheatreChaseRainbow:
+            case LEDMode.TheatreChaseRainbow:
                 TheaterChaseRainbow();
                 break;
-            case Mode.AppearFromBack:
+            case LEDMode.AppearFromBack:
                 AppearFromBack();
                 break;
-            case Mode.Hyperspace:
+            case LEDMode.Hyperspace:
                 Hyperspace();
                 break;
-            case Mode.Breathing:
+            case LEDMode.Breathing:
                 Breathe();
                 break;
-            case Mode.BreathingRainbow:
+            case LEDMode.BreathingRainbow:
                 BreathingRainbow();
                 break;
-            case Mode.SelectedColors:
+            case LEDMode.SelectedColors:
                 SelectedColors();
                 break;
-            case Mode.Chaser:
+            case LEDMode.Chaser:
                 Chaser();
                 break;
         }
@@ -83,44 +83,44 @@ public class LEDEffects : ILEDEffects
     {
         var color = GetColorAndApplyBrightness();
 
-        using var rpi = new WS281x(LEDControlData.settings);
+        using var rpi = new WS281x(LEDStrip.Settings);
 
         do
         {
             Clear(rpi);
             
-            for (var i = 0; i < LEDControlData.strip.LEDCount; i++)
+            for (var i = 0; i < LEDStrip.Count; i++)
             {
                 if (LEDState.IsDirty)
                     return;
 
-                LEDControlData.strip.SetLED(i, color);
+                LEDStrip.SetLED(i, color);
                 rpi.Render();
 
-                Thread.Sleep(LEDSettings?.WaitTime ?? _defaultWaitTime);
+                Thread.Sleep(Settings?.WaitTime ?? _defaultWaitTime);
             }
-        } while (LEDSettings?.Loop ?? false);
+        } while (Settings?.Loop ?? false);
     }
 
     public void StaticColor()
     {
-        using var rpi = new WS281x(LEDControlData.settings);
+        using var rpi = new WS281x(LEDStrip.Settings);
 
-        LEDControlData.strip.SetAll(GetColorAndApplyBrightness());
+        LEDStrip.SetAll(GetColorAndApplyBrightness());
         rpi.Render();
     }
 
     public void Rainbow()
     {
-        using var rpi = new WS281x(LEDControlData.settings);
+        using var rpi = new WS281x(LEDStrip.Settings);
 
-        for (var i = 0; i < LEDControlData.strip.LEDCount; i++)
+        for (var i = 0; i < LEDStrip.Count; i++)
         {
             if (LEDState.IsDirty)
                 return;
 
             var color = Wheel(i & 255);
-            LEDControlData.strip.SetLED(i, color);
+            LEDStrip.SetLED(i, color);
         }
 
         rpi.Render();
@@ -128,106 +128,106 @@ public class LEDEffects : ILEDEffects
 
     public void RainbowCycle()
     {
-        using var rpi = new WS281x(LEDControlData.settings);
+        using var rpi = new WS281x(LEDStrip.Settings);
 
         do
         {
             for (var j = 0; j < 256; j++)
             {
-                for (var i = 0; i < LEDControlData.strip.LEDCount; i++)
+                for (var i = 0; i < LEDStrip.Count; i++)
                 {
                     if (LEDState.IsDirty)
                         return;
 
-                    var color = Wheel((i * 256 / LEDControlData.strip.LEDCount + j) & 255);
-                    LEDControlData.strip.SetLED(i, color);
+                    var color = Wheel((i * 256 / LEDStrip.Count + j) & 255);
+                    LEDStrip.SetLED(i, color);
                 }
 
                 rpi.Render();
-                Thread.Sleep(LEDSettings?.WaitTime ?? _defaultWaitTime);
+                Thread.Sleep(Settings?.WaitTime ?? _defaultWaitTime);
             }
-        } while (LEDSettings?.Loop ?? false);
+        } while (Settings?.Loop ?? false);
     }
 
     public void TheaterChase()
     {
         var color = GetColorAndApplyBrightness();
 
-        using var rpi = new WS281x(LEDControlData.settings);
+        using var rpi = new WS281x(LEDStrip.Settings);
 
         do
         {
             for (var q = 0; q < 3; q++)
             {
-                for (var i = 0; i < LEDControlData.strip.LEDCount; i += 3)
+                for (var i = 0; i < LEDStrip.Count; i += 3)
                 {
                     if (LEDState.IsDirty)
                         return;
 
-                    LEDControlData.strip.SetLED(i + q, color);
+                    LEDStrip.SetLED(i + q, color);
                 }
 
                 rpi.Render();
-                Thread.Sleep(LEDSettings?.WaitTime ?? _defaultWaitTime);
+                Thread.Sleep(Settings?.WaitTime ?? _defaultWaitTime);
 
-                for (var i = 0; i < LEDControlData.strip.LEDCount; i += 3)
+                for (var i = 0; i < LEDStrip.Count; i += 3)
                 {
                     if (LEDState.IsDirty)
                         return;
 
-                    LEDControlData.strip.SetLED(i + q, Color.Black);
+                    LEDStrip.SetLED(i + q, Color.Black);
                 }
             }
-        } while (LEDSettings?.Loop ?? false);
+        } while (Settings?.Loop ?? false);
     }
 
     public void TheaterChaseRainbow()
     {
-        using var rpi = new WS281x(LEDControlData.settings);
+        using var rpi = new WS281x(LEDStrip.Settings);
 
         do
         {
             for (var q = 0; q < 3; q++)
             {
-                for (var i = 0; i < LEDControlData.strip.LEDCount; i += 3)
+                for (var i = 0; i < LEDStrip.Count; i += 3)
                 {
                     if (LEDState.IsDirty)
                         return;
 
-                    LEDControlData.strip.SetLED(i + q, Wheel((i) % 255));
+                    LEDStrip.SetLED(i + q, Wheel((i) % 255));
                 }
 
                 rpi.Render();
-                Thread.Sleep(LEDSettings?.WaitTime ?? _defaultWaitTime);
+                Thread.Sleep(Settings?.WaitTime ?? _defaultWaitTime);
 
-                for (var i = 0; i < LEDControlData.strip.LEDCount; i += 3)
+                for (var i = 0; i < LEDStrip.Count; i += 3)
                 {
                     if (LEDState.IsDirty)
                         return;
 
-                    LEDControlData.strip.SetLED(i + q, Color.Black);
+                    LEDStrip.SetLED(i + q, Color.Black);
                 }
             }
-        } while (LEDSettings?.Loop ?? false);
+        } while (Settings?.Loop ?? false);
     }
 
     public void AppearFromBack()
     {
         var color = GetColorAndApplyBrightness();
 
-        using var rpi = new WS281x(LEDControlData.settings);
+        using var rpi = new WS281x(LEDStrip.Settings);
 
         do
         {
-            for (var i = LEDControlData.strip.LEDCount - 1; i >= 0; i--)
+            for (var i = LEDStrip.Count - 1; i >= 0; i--)
             {
                 if (LEDState.IsDirty)
                     return;
 
-                LEDControlData.strip.SetLED(i, color);
+                LEDStrip.SetLED(i, color);
                 rpi.Render();
             }
-        } while (LEDSettings?.Loop ?? false);
+        } while (Settings?.Loop ?? false);
     }
 
     public void Hyperspace()
@@ -243,7 +243,7 @@ public class LEDEffects : ILEDEffects
                 return;
             
             Breathe(GetColor());
-        } while (LEDSettings?.Loop ?? false);
+        } while (Settings?.Loop ?? false);
     }
 
     public void BreathingRainbow()
@@ -268,20 +268,20 @@ public class LEDEffects : ILEDEffects
 
                 Breathe(color);
             }
-        } while (LEDSettings?.Loop ?? false);
+        } while (Settings?.Loop ?? false);
     }
 
     public void SelectedColors()
     {
-        using var rpi = new WS281x(LEDControlData.settings);
+        using var rpi = new WS281x(LEDStrip.Settings);
 
         var ledIndex = 0;
 
-        foreach (var color in LEDSettings?.Colors)
+        foreach (var color in Settings?.Colors)
         {
             var newColor = color.ApplyBrightnessToColor(BrightnessPercentage);
 
-            LEDControlData.strip.SetLED(ledIndex, newColor);
+            LEDStrip.SetLED(ledIndex, newColor);
             ledIndex++;
         }
 
@@ -295,7 +295,7 @@ public class LEDEffects : ILEDEffects
 
     public void Clear(int delay = 0)
     {
-        using var rpi = new WS281x(LEDControlData.settings);
+        using var rpi = new WS281x(LEDStrip.Settings);
 
         Clear(rpi, delay);
     }
@@ -307,17 +307,17 @@ public class LEDEffects : ILEDEffects
 
         if (delay == 0)
         {
-            LEDControlData.strip.SetAll(Color.Black);
+            LEDStrip.SetAll(Color.Black);
             rpi.Render();
         }
         else
         {
-            for (var i = 0; i < LEDControlData.strip.LEDCount; i++)
+            for (var i = 0; i < LEDStrip.Count; i++)
             {
                 if (LEDState.IsDirty)
                     return;
 
-                LEDControlData.strip.SetLED(i, Color.Black);
+                LEDStrip.SetLED(i, Color.Black);
                 rpi.Render();
                 Thread.Sleep(delay);
             }
@@ -330,29 +330,29 @@ public class LEDEffects : ILEDEffects
 
     private Color GetColor()
     {
-        return LEDSettings?.Color ?? Color.Black;
+        return Settings?.Color ?? Color.Black;
     }
 
     private Color GetColorAndApplyBrightness()
     {
-        return LEDSettings?.Color?.ApplyBrightnessToColor(BrightnessPercentage) ?? Color.Black;
+        return Settings?.Color?.ApplyBrightnessToColor(BrightnessPercentage) ?? Color.Black;
     }
 
     private void Breathe(Color color)
     {
-        using var rpi = new WS281x(LEDControlData.settings);
+        using var rpi = new WS281x(LEDStrip.Settings);
         
-        for (var i = 0; i < LEDControlData.strip.LEDCount; i++)
+        for (var i = 0; i < LEDStrip.Count; i++)
         {
             if (LEDState.IsDirty)
                 return;
 
             var newColor = color.ApplyBrightnessToColor(Gaussian(i) / 255.0);
             
-            LEDControlData.strip.SetAll(newColor);
+            LEDStrip.SetAll(newColor);
             rpi.Render();
             
-            Thread.Sleep(LEDSettings?.WaitTime ?? _defaultWaitTime);
+            Thread.Sleep(Settings?.WaitTime ?? _defaultWaitTime);
         }
     }
 
@@ -361,7 +361,7 @@ public class LEDEffects : ILEDEffects
         const double alpha = 255.0;
         const double beta = 0.5;
         const double gamma = 0.14;
-        double N = LEDControlData.strip.LEDCount;
+        double N = LEDStrip.Count;
         
         var top = -Math.Pow(x / N - beta, 2);
         var bottom = 2 * Math.Pow(gamma, 2);
@@ -374,13 +374,13 @@ public class LEDEffects : ILEDEffects
         switch (pos)
         {
             case < 85:
-                return Color.FromArgb(LEDControlData.strip.Brightness, pos * 3, 255 - pos * 3, 0);
+                return Color.FromArgb(LEDStrip.Brightness, pos * 3, 255 - pos * 3, 0);
             case < 170:
                 pos -= 85;
-                return Color.FromArgb(LEDControlData.strip.Brightness, 255 - pos * 3, 0, pos * 3);
+                return Color.FromArgb(LEDStrip.Brightness, 255 - pos * 3, 0, pos * 3);
             default:
                 pos -= 170;
-                return Color.FromArgb(LEDControlData.strip.Brightness, 0, pos * 3, 255 - pos * 3);
+                return Color.FromArgb(LEDStrip.Brightness, 0, pos * 3, 255 - pos * 3);
         }
     }
     
